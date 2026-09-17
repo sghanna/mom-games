@@ -5,15 +5,15 @@
   --felt-light: #257c6b;
   --cream: #fffdf7;
   --ink: #18221f;
-  --red: #bc3f43;
+  --red: #9c1c22;
   --gold: #f2c35e;
   --line: rgba(255, 255, 255, 0.34);
   --shadow: 0 3px 8px rgba(3, 35, 29, 0.24), 0 1px 2px rgba(3, 35, 29, 0.24);
-  --card-width: clamp(40px, 12vw, 82px);
+  --card-width: clamp(48px, calc((100vw - 48px) / 7), 160px);
   --card-height: calc(var(--card-width) * 1.42);
-  --pile-gap: clamp(3px, 1.2vw, 10px);
-  --down-step: clamp(13px, 2.05vh, 18px);
-  --up-step: clamp(23px, 3.45vh, 32px);
+  --pile-gap: 4px;
+  --down-step: clamp(15px, 2.3vh, 22px);
+  --up-step: clamp(28px, 4vh, 44px);
 }
 
 * {
@@ -109,8 +109,8 @@ button:focus-visible,
 
 .brand h1 {
   margin: 0;
-  font-size: clamp(17px, 4.8vw, 24px);
-  font-weight: 720;
+  font-size: clamp(20px, 5.6vw, 28px);
+  font-weight: 750;
   letter-spacing: -0.02em;
 }
 
@@ -122,18 +122,18 @@ button:focus-visible,
 
 .control-button {
   display: flex;
-  min-width: 54px;
-  min-height: 44px;
+  min-width: 64px;
+  min-height: 52px;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: 7px 9px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  gap: 5px;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.14);
   color: #fff;
-  font-size: 14px;
-  font-weight: 650;
+  font-size: 19px;
+  font-weight: 700;
   line-height: 1;
 }
 
@@ -148,16 +148,32 @@ button:focus-visible,
 
 .control-icon {
   display: inline-grid;
-  min-width: 17px;
+  min-width: 20px;
   place-items: center;
-  font-size: 20px;
-  font-weight: 650;
+  font-size: 26px;
+  font-weight: 700;
   line-height: 1;
+}
+
+.rotate-hint {
+  display: none;
+  margin: 8px auto 0;
+  padding: 6px 14px;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+}
+
+@media (orientation: portrait) {
+  .rotate-hint {
+    display: block;
+  }
 }
 
 .game-board {
   width: 100%;
-  max-width: 690px;
+  max-width: min(98vw, 1300px);
   min-height: 0;
   flex: 1;
   align-self: center;
@@ -221,13 +237,13 @@ button:focus-visible,
   right: -4px;
   bottom: -7px;
   z-index: 4;
-  min-width: 25px;
-  padding: 3px 5px;
+  min-width: 30px;
+  padding: 4px 6px;
   border: 2px solid var(--felt);
   border-radius: 99px;
   background: var(--cream);
   color: var(--felt-deep);
-  font-size: 11px;
+  font-size: 15px;
   font-weight: 800;
   line-height: 1;
   text-align: center;
@@ -277,7 +293,7 @@ button:focus-visible,
   margin: 0;
   padding: 0;
   overflow: hidden;
-  border: 1px solid rgba(19, 31, 27, 0.22);
+  border: 2px solid rgba(19, 31, 27, 0.35);
   border-radius: calc(var(--card-width) * 0.105);
   box-shadow: var(--shadow);
   -webkit-user-drag: element;
@@ -321,22 +337,22 @@ button.card {
 
 .card-corner {
   position: absolute;
-  top: calc(var(--card-width) * 0.075);
-  left: calc(var(--card-width) * 0.075);
+  top: calc(var(--card-width) * 0.06);
+  left: calc(var(--card-width) * 0.06);
   display: flex;
   flex-direction: column;
   align-items: center;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(14px, calc(var(--card-width) * 0.35), 25px);
-  font-weight: 800;
-  letter-spacing: -0.05em;
-  line-height: 0.76;
+  font-size: clamp(18px, calc(var(--card-width) * 0.42), 40px);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 0.8;
 }
 
 .corner-suit {
-  margin-top: calc(var(--card-width) * 0.055);
-  font-size: 0.76em;
-  font-weight: 400;
+  margin-top: calc(var(--card-width) * 0.05);
+  font-size: 0.82em;
+  font-weight: 500;
 }
 
 .card-center-suit {
@@ -345,9 +361,9 @@ button.card {
   display: grid;
   place-items: center;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(22px, calc(var(--card-width) * 0.58), 44px);
+  font-size: clamp(24px, calc(var(--card-width) * 0.62), 66px);
   line-height: 1;
-  opacity: 0.94;
+  opacity: 0.96;
 }
 
 .card.selected {
@@ -392,8 +408,8 @@ button.card {
   background: rgba(7, 45, 39, 0.9);
   box-shadow: 0 4px 16px rgba(3, 35, 29, 0.24);
   color: #fff;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 650;
   opacity: 0;
   pointer-events: none;
   text-align: center;
@@ -465,8 +481,8 @@ button.card {
 .win-card h2 {
   margin: 8px 0 16px;
   color: #154c41;
-  font-size: 29px;
-  letter-spacing: -0.025em;
+  font-size: 34px;
+  letter-spacing: -0.02em;
 }
 
 .help-copy {
@@ -474,22 +490,23 @@ button.card {
 }
 
 .help-copy p {
-  margin: 0 0 13px;
-  font-size: 16px;
-  line-height: 1.45;
+  margin: 0 0 16px;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.5;
 }
 
 .primary-button {
-  min-width: 150px;
-  min-height: 50px;
+  min-width: 170px;
+  min-height: 58px;
   margin-top: 7px;
-  padding: 12px 24px;
+  padding: 14px 26px;
   border: 0;
   border-radius: 14px;
   background: var(--felt);
   box-shadow: 0 4px 9px rgba(16, 86, 72, 0.24);
   color: #fff;
-  font-size: 17px;
+  font-size: 21px;
   font-weight: 750;
 }
 
@@ -511,9 +528,10 @@ button.card {
 
 .win-card p {
   margin: 0 auto 20px;
-  max-width: 280px;
-  color: #40524d;
-  font-size: 17px;
+  max-width: 300px;
+  color: #33453f;
+  font-size: 20px;
+  font-weight: 500;
   line-height: 1.5;
 }
 
@@ -522,7 +540,7 @@ button.card {
   justify-content: center;
   gap: 12px;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: 30px;
+  font-size: 36px;
 }
 
 .win-suits span:nth-child(2),
