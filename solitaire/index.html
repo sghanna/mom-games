@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; font-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'self'; child-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'">
+    <meta name="theme-color" content="#176b5b">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Solitaire">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="description" content="A calm, ad-free Klondike Solitaire game that works offline.">
+    <title>Solitaire</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="app-shell" id="app">
+      <header class="top-bar">
+        <div class="brand" aria-label="Solitaire">
+          <span class="brand-mark" aria-hidden="true">♠</span>
+          <h1>Solitaire</h1>
+        </div>
+        <nav class="top-actions" aria-label="Game controls">
+          <button class="control-button" id="new-game-button" type="button">
+            <span class="control-icon" aria-hidden="true">↻</span>
+            <span>New</span>
+          </button>
+          <button class="control-button" id="undo-button" type="button" disabled>
+            <span class="control-icon" aria-hidden="true">↶</span>
+            <span>Undo</span>
+          </button>
+          <button class="control-button" id="help-button" type="button" aria-haspopup="dialog">
+            <span class="control-icon" aria-hidden="true">?</span>
+            <span>Help</span>
+          </button>
+        </nav>
+      </header>
+
+      <main class="game-board" id="game-board" aria-label="Klondike Solitaire game board">
+        <section class="top-piles" aria-label="Stock, waste, and foundations">
+          <div class="pile slot stock-pile" id="stock-pile" data-zone="stock" role="button" tabindex="0"></div>
+          <div class="pile slot waste-pile" id="waste-pile" data-zone="waste" role="group"></div>
+          <div class="top-spacer" aria-hidden="true"></div>
+          <div class="pile slot foundation-pile" data-zone="foundation" data-pile-index="0" role="button" tabindex="0" aria-label="Spades foundation">
+            <span class="slot-symbol black" aria-hidden="true">♠</span>
+          </div>
+          <div class="pile slot foundation-pile" data-zone="foundation" data-pile-index="1" role="button" tabindex="0" aria-label="Hearts foundation">
+            <span class="slot-symbol red" aria-hidden="true">♥</span>
+          </div>
+          <div class="pile slot foundation-pile" data-zone="foundation" data-pile-index="2" role="button" tabindex="0" aria-label="Clubs foundation">
+            <span class="slot-symbol black" aria-hidden="true">♣</span>
+          </div>
+          <div class="pile slot foundation-pile" data-zone="foundation" data-pile-index="3" role="button" tabindex="0" aria-label="Diamonds foundation">
+            <span class="slot-symbol red" aria-hidden="true">♦</span>
+          </div>
+        </section>
+
+        <section class="tableau" id="tableau" aria-label="Tableau columns">
+          <div class="pile tableau-pile" data-zone="tableau" data-pile-index="0" role="button" tabindex="0"></div>
+          <div class="pile tableau-pile" data-zone="tableau" data-pile-index="1" role="button" tabindex="0"></div>
+          <div class="pile tableau-pile" data-zone="tableau" data-pile-index="2" role="button" tabindex="0"></div>
+          <div class="pile tableau-pile" data-zone="tableau" data-pile-index="3" role="button" tabindex="0"></div>
+          <div class="pile tableau-pile" data-zone="tableau" data-pile-index="4" role="button" tabindex="0"></div>
+          <div class="pile tableau-pile" data-zone="tableau" data-pile-index="5" role="button" tabindex="0"></div>
+          <div class="pile tableau-pile" data-zone="tableau" data-pile-index="6" role="button" tabindex="0"></div>
+        </section>
+      </main>
+
+      <div class="status-message" id="status-message" role="status" aria-live="polite" aria-atomic="true"></div>
+    </div>
+
+    <section class="modal-backdrop" id="help-modal" hidden aria-hidden="true">
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="help-title" aria-describedby="help-description">
+        <button class="modal-close" id="help-close-button" type="button" aria-label="Close help">×</button>
+        <div class="modal-suit" aria-hidden="true">♠</div>
+        <h2 id="help-title">How to Play</h2>
+        <div id="help-description" class="help-copy">
+          <p><strong>Tap a face-up card</strong> to select it. A gold outline shows your choice. Then tap the pile where you want it to go.</p>
+          <p><strong>Double-tap a card</strong> to move it automatically. The game tries a foundation first, then an open tableau spot.</p>
+          <p>Build tableau columns downward, alternating red and black. Only a King can fill an empty column.</p>
+          <p>Build each top foundation from Ace to King in the same suit. Tap the deck to draw. When it is empty, tap it again to recycle the cards.</p>
+          <p>You can use <strong>Undo</strong> as often as you like.</p>
+        </div>
+        <button class="primary-button" id="help-done-button" type="button">Got It</button>
+      </div>
+    </section>
+
+    <section class="win-overlay" id="win-overlay" hidden aria-hidden="true">
+      <div class="celebration" aria-hidden="true">
+        <i style="--x: 7%; --delay: 0s; --color: #f5c45e"></i>
+        <i style="--x: 15%; --delay: .7s; --color: #fff7df"></i>
+        <i style="--x: 24%; --delay: .25s; --color: #ef7d73"></i>
+        <i style="--x: 34%; --delay: 1.1s; --color: #76c9b6"></i>
+        <i style="--x: 45%; --delay: .45s; --color: #f5c45e"></i>
+        <i style="--x: 56%; --delay: .9s; --color: #fff7df"></i>
+        <i style="--x: 66%; --delay: .15s; --color: #ef7d73"></i>
+        <i style="--x: 76%; --delay: 1.25s; --color: #76c9b6"></i>
+        <i style="--x: 86%; --delay: .55s; --color: #f5c45e"></i>
+        <i style="--x: 94%; --delay: 1s; --color: #fff7df"></i>
+      </div>
+      <div class="win-card" role="dialog" aria-modal="true" aria-labelledby="win-title">
+        <div class="win-suits" aria-hidden="true"><span>♠</span><span>♥</span><span>♣</span><span>♦</span></div>
+        <h2 id="win-title">You did it!</h2>
+        <p>Every card found its place. Beautifully played.</p>
+        <button class="primary-button" id="play-again-button" type="button">Play Again</button>
+      </div>
+    </section>
+
+    <noscript>This game needs JavaScript enabled to play.</noscript>
+    <script src="app.js" defer></script>
+  </body>
+</html>
