@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; font-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'self'; child-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'">
+    <meta name="theme-color" content="#245f70">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Hearts">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="description" content="A calm, ad-free Hearts card game that works offline.">
+    <title>Hearts</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="app-shell" id="app">
+      <header class="top-bar">
+        <div class="brand" aria-label="Hearts">
+          <span class="brand-mark" aria-hidden="true">♥</span>
+          <h1>Hearts</h1>
+        </div>
+        <nav class="top-actions" aria-label="Game controls">
+          <button class="control-button" id="new-game-button" type="button">
+            <span class="control-icon" aria-hidden="true">↻</span>
+            <span>New Game</span>
+          </button>
+          <button class="control-button" id="help-button" type="button" aria-haspopup="dialog">
+            <span class="control-icon help-icon" aria-hidden="true">?</span>
+            <span>How to Play</span>
+          </button>
+        </nav>
+      </header>
+
+      <section class="scoreboard" id="scoreboard" aria-label="Scores"></section>
+      <p class="rotate-hint" aria-hidden="true">↻ Turn your phone sideways for bigger cards</p>
+
+      <main class="game-board" aria-label="Hearts card table">
+        <section class="table-area" aria-label="Players and current trick">
+          <div class="opponent opponent-north" id="player-2"></div>
+          <div class="opponent opponent-west" id="player-1"></div>
+
+          <div class="trick-stage" id="trick-stage" aria-label="Current trick">
+            <div class="trick-slot trick-north" data-trick-player="2"></div>
+            <div class="trick-slot trick-west" data-trick-player="1"></div>
+            <div class="trick-center" id="trick-center"></div>
+            <div class="trick-slot trick-east" data-trick-player="3"></div>
+            <div class="trick-slot trick-south" data-trick-player="0"></div>
+          </div>
+
+          <div class="opponent opponent-east" id="player-3"></div>
+        </section>
+
+        <section class="turn-panel" aria-live="polite" aria-atomic="true">
+          <p class="turn-message" id="turn-message"></p>
+          <p class="turn-detail" id="turn-detail"></p>
+        </section>
+
+        <section class="pass-panel" id="pass-panel" hidden aria-label="Pass cards">
+          <div>
+            <p class="pass-title" id="pass-title"></p>
+            <p class="pass-count" id="pass-count"></p>
+          </div>
+          <button class="primary-button pass-button" id="pass-button" type="button" disabled>Pass 3 Cards</button>
+        </section>
+
+        <section class="your-seat" id="player-0" aria-label="Your hand">
+          <div class="your-seat-heading">
+            <span class="seat-name">Your hand</span>
+            <span class="card-count" id="your-card-count"></span>
+          </div>
+          <div class="human-hand" id="human-hand"></div>
+        </section>
+      </main>
+    </div>
+
+    <section class="modal-backdrop" id="help-modal" hidden aria-hidden="true">
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="help-title" aria-describedby="help-description">
+        <button class="modal-close" id="help-close-button" type="button" aria-label="Close help">×</button>
+        <div class="modal-suit red" aria-hidden="true">♥</div>
+        <h2 id="help-title">How to Play</h2>
+        <div id="help-description" class="help-copy">
+          <p><strong>Avoid points.</strong> Each heart is 1 point, and the Queen of Spades is 13. The lowest score wins.</p>
+          <p><strong>Follow the suit led</strong> if you can. If you cannot, play any legal card. The highest card in the led suit takes the trick.</p>
+          <p>The 2 of Clubs starts each hand. No hearts or Queen of Spades can be played on that first trick. You cannot lead hearts until someone has played one on another suit.</p>
+          <p>Before most hands, choose 3 cards to pass. Passing rotates left, right, across, then no pass.</p>
+          <p>If one player takes every heart and the Queen of Spades, they <strong>shoot the moon</strong>: the other players each add 26 points.</p>
+          <p>The game ends when someone reaches 100. The player with the lowest score wins.</p>
+        </div>
+        <button class="primary-button" id="help-done-button" type="button">Got It</button>
+      </div>
+    </section>
+
+    <section class="modal-backdrop" id="new-game-modal" hidden aria-hidden="true">
+      <div class="modal-card compact-modal" role="dialog" aria-modal="true" aria-labelledby="new-game-title" aria-describedby="new-game-description">
+        <div class="modal-suit" aria-hidden="true">♣</div>
+        <h2 id="new-game-title">Start a New Game?</h2>
+        <p id="new-game-description" class="modal-copy">Your current game will be replaced.</p>
+        <div class="modal-actions">
+          <button class="secondary-button" id="cancel-new-game-button" type="button">Keep Playing</button>
+          <button class="primary-button" id="confirm-new-game-button" type="button">New Game</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="modal-backdrop" id="summary-modal" hidden aria-hidden="true">
+      <div class="modal-card summary-card" role="dialog" aria-modal="true" aria-labelledby="summary-title">
+        <div class="modal-suit red" aria-hidden="true">♥</div>
+        <h2 id="summary-title">Hand Complete</h2>
+        <p class="summary-note" id="summary-note"></p>
+        <div class="results-table" id="hand-results"></div>
+        <button class="primary-button" id="continue-button" type="button">Continue</button>
+      </div>
+    </section>
+
+    <section class="game-over-overlay" id="game-over-overlay" hidden aria-hidden="true">
+      <div class="celebration" aria-hidden="true">
+        <i style="--x: 8%; --delay: 0s; --color: #f2c35e"></i>
+        <i style="--x: 19%; --delay: .6s; --color: #fffdf7"></i>
+        <i style="--x: 31%; --delay: .2s; --color: #d56568"></i>
+        <i style="--x: 44%; --delay: .9s; --color: #7bc6c7"></i>
+        <i style="--x: 57%; --delay: .4s; --color: #f2c35e"></i>
+        <i style="--x: 70%; --delay: 1s; --color: #fffdf7"></i>
+        <i style="--x: 82%; --delay: .3s; --color: #d56568"></i>
+        <i style="--x: 93%; --delay: .75s; --color: #7bc6c7"></i>
+      </div>
+      <div class="modal-card game-over-card" role="dialog" aria-modal="true" aria-labelledby="game-over-title">
+        <div class="win-suits" aria-hidden="true"><span>♣</span><span>♥</span><span>♠</span><span>♦</span></div>
+        <h2 id="game-over-title"></h2>
+        <p id="game-over-message" class="game-over-message"></p>
+        <div class="final-standings" id="final-standings"></div>
+        <button class="primary-button" id="play-again-button" type="button">Play Again</button>
+      </div>
+    </section>
+
+    <div class="sr-only" id="announcer" role="status" aria-live="polite" aria-atomic="true"></div>
+    <noscript>This game needs JavaScript enabled to play.</noscript>
+    <script src="app.js" defer></script>
+  </body>
+</html>
