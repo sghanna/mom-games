@@ -10,8 +10,19 @@
   const RANKS = ["", "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
   const RANK_NAMES = ["", "Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"];
   const STORAGE_KEY = "solitaire-saved-game-v1";
+  const PLAYED_BEFORE_KEY = "solitaire-played-before-v1";
   const MAX_UNDO_STEPS = 100;
   const DOUBLE_TAP_MS = 360;
+
+  // Each of these 52-card orderings was found and verified winnable by an
+  // offline solver (full replay of a legal move sequence to all 4
+  // foundations, matching this file's exact deal/recycle rules). Used only
+  // for a player's very first game, so their first experience is a win.
+  const FIRST_GAME_DECKS = [
+    ["hearts-5", "spades-9", "diamonds-9", "spades-7", "clubs-8", "clubs-10", "diamonds-3", "diamonds-10", "hearts-6", "diamonds-11", "diamonds-7", "hearts-4", "clubs-9", "hearts-8", "hearts-11", "hearts-13", "clubs-11", "spades-6", "hearts-12", "clubs-4", "hearts-2", "diamonds-6", "hearts-7", "hearts-9", "clubs-12", "hearts-10", "clubs-6", "hearts-3", "spades-12", "spades-5", "spades-3", "diamonds-4", "diamonds-12", "clubs-2", "clubs-5", "spades-10", "spades-4", "clubs-7", "clubs-3", "hearts-1", "diamonds-2", "spades-2", "spades-8", "spades-1", "diamonds-1", "diamonds-5", "diamonds-8", "spades-13", "clubs-13", "spades-11", "diamonds-13", "clubs-1"],
+    ["diamonds-7", "diamonds-5", "clubs-5", "spades-6", "spades-12", "diamonds-9", "clubs-9", "spades-8", "diamonds-1", "hearts-3", "spades-9", "spades-5", "clubs-12", "clubs-7", "hearts-7", "diamonds-6", "clubs-3", "clubs-1", "hearts-11", "spades-11", "diamonds-13", "hearts-2", "spades-7", "clubs-6", "diamonds-3", "hearts-9", "diamonds-2", "spades-4", "hearts-6", "diamonds-11", "clubs-13", "clubs-4", "spades-1", "hearts-8", "diamonds-8", "diamonds-10", "hearts-12", "clubs-8", "hearts-4", "hearts-1", "spades-2", "diamonds-4", "clubs-2", "spades-10", "spades-3", "clubs-11", "diamonds-12", "hearts-13", "spades-13", "hearts-5", "clubs-10", "hearts-10"],
+    ["spades-6", "spades-13", "hearts-4", "spades-4", "hearts-5", "spades-11", "clubs-5", "hearts-2", "hearts-3", "spades-5", "diamonds-2", "spades-9", "clubs-8", "diamonds-8", "clubs-12", "diamonds-1", "clubs-6", "clubs-9", "diamonds-11", "diamonds-4", "hearts-9", "spades-12", "hearts-6", "diamonds-13", "hearts-13", "clubs-7", "clubs-11", "diamonds-3", "clubs-4", "diamonds-12", "clubs-13", "hearts-8", "hearts-10", "diamonds-9", "diamonds-5", "spades-3", "spades-1", "hearts-11", "diamonds-6", "diamonds-10", "spades-10", "clubs-1", "spades-8", "spades-2", "hearts-12", "clubs-3", "diamonds-7", "hearts-1", "spades-7", "clubs-10", "hearts-7", "clubs-2"]
+  ];
 
   const appShell = document.getElementById("app");
   const board = document.getElementById("game-board");
@@ -70,8 +81,29 @@
     return cards;
   }
 
-  function createNewGame() {
-    const deck = shuffle(createDeck());
+  function hasPlayedBefore() {
+    try {
+      return localStorage.getItem(PLAYED_BEFORE_KEY) === "1";
+    } catch (error) {
+      return true;
+    }
+  }
+
+  function markPlayedBefore() {
+    try {
+      localStorage.setItem(PLAYED_BEFORE_KEY, "1");
+    } catch (error) {
+      // If storage is unavailable, every game will simply be a random shuffle.
+    }
+  }
+
+  function buildFirstGameDeck() {
+    const ids = FIRST_GAME_DECKS[Math.floor(randomNumber() * FIRST_GAME_DECKS.length)];
+    const cardsById = new Map(createDeck().map((card) => [card.id, card]));
+    return ids.map((id) => ({ ...cardsById.get(id) }));
+  }
+
+  function dealFromDeck(deck) {
     const tableau = Array.from({ length: 7 }, () => []);
 
     for (let row = 0; row < 7; row += 1) {
@@ -92,6 +124,13 @@
       tableau,
       moveCount: 0
     };
+  }
+
+  function createNewGame() {
+    const playingFirstGame = !hasPlayedBefore();
+    const deck = playingFirstGame ? buildFirstGameDeck() : shuffle(createDeck());
+    if (playingFirstGame) markPlayedBefore();
+    return dealFromDeck(deck);
   }
 
   function isValidSavedGame(candidate) {
