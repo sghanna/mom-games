@@ -532,7 +532,10 @@
     element.setAttribute("aria-label", options.ariaLabel || cardName(card));
     element.innerHTML = `
       <span class="card-face" aria-hidden="true">
-        <span class="card-rank">${rankLabel(card.rank)}</span>
+        <span class="card-index">
+          <span class="card-rank">${rankLabel(card.rank)}</span>
+          <span class="card-suit-small">${suit.symbol}</span>
+        </span>
         <span class="card-suit-big">${suit.symbol}</span>
       </span>
     `;
