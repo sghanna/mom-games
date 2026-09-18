@@ -834,21 +834,20 @@
   winOverlay.addEventListener("keydown", (event) => handleModalTab(event, winOverlay));
   playAgainButton.addEventListener("click", startNewGame);
 
-  function playLegatoNote(ctx, frequency, startTime, duration) {
+  function playPluckNote(ctx, frequency, startTime, duration) {
     const oscillator = ctx.createOscillator();
     oscillator.type = "triangle";
     oscillator.frequency.value = frequency;
 
     const gain = ctx.createGain();
     gain.gain.setValueAtTime(0, startTime);
-    gain.gain.linearRampToValueAtTime(0.2, startTime + 0.04);
-    gain.gain.setValueAtTime(0.2, startTime + duration - 0.06);
-    gain.gain.linearRampToValueAtTime(0, startTime + duration);
+    gain.gain.linearRampToValueAtTime(0.22, startTime + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
 
     oscillator.connect(gain);
     gain.connect(ctx.destination);
     oscillator.start(startTime);
-    oscillator.stop(startTime + duration + 0.02);
+    oscillator.stop(startTime + duration + 0.05);
   }
 
   function playOpeningTune() {
@@ -858,27 +857,22 @@
       const ctx = new AudioContextClass();
       if (ctx.state === "suspended") ctx.resume();
 
-      // The opening violin theme of Beethoven's Symphony No. 6 "Pastoral"
-      // (1808), first movement, in F major. Beethoven died in 1827, so this
-      // public-domain melody is transcribed here from memory of its familiar
-      // shape (the gentle repeating F major arpeggio resolving downward) -
-      // a good-faith rendition, not a verified note-for-note score copy.
-      const F4 = 349.23;
-      const G4 = 392.00;
-      const A4 = 440.00;
-      const Bb4 = 466.16;
-      const C5 = 523.25;
-      const melody = [
-        F4, A4, C5, A4,
-        F4, A4, C5, A4,
-        Bb4, A4, G4, F4
+      // An original gentle A-minor fingerstyle-style arpeggio (Am - G - F - E),
+      // written from scratch for this app - not based on any existing song.
+      const chords = [
+        [220.00, 261.63, 329.63, 440.00],
+        [196.00, 246.94, 293.66, 392.00],
+        [174.61, 220.00, 261.63, 349.23],
+        [164.81, 207.65, 246.94, 329.63]
       ];
-      const noteDuration = 0.42;
-      const noteGap = 0.38;
+      const noteDuration = 0.32;
+      const noteGap = 0.28;
       let time = ctx.currentTime + 0.02;
-      melody.forEach((frequency) => {
-        playLegatoNote(ctx, frequency, time, noteDuration);
-        time += noteGap;
+      chords.forEach((chord) => {
+        chord.forEach((frequency) => {
+          playPluckNote(ctx, frequency, time, noteDuration);
+          time += noteGap;
+        });
       });
       window.setTimeout(() => ctx.close(), (time - ctx.currentTime + 1) * 1000);
     } catch (error) {
