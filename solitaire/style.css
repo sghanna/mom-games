@@ -350,7 +350,7 @@ button.card {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: calc(var(--rank-size) * 0.2);
+  gap: calc(var(--rank-size) * 0.03);
 }
 
 .card-rank {
@@ -579,7 +579,44 @@ button.card {
   font-style: normal;
   line-height: 1;
   opacity: 0;
+  animation: confetti-fall 1.6s var(--delay) ease-in infinite;
+}
+
+.celebration-preview {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.celebration-preview i {
+  position: absolute;
+  top: -46px;
+  left: var(--x);
+  font-size: 34px;
+  font-style: normal;
+  line-height: 1;
+  opacity: 0;
   animation: confetti-fall 3.2s var(--delay) ease-in infinite;
+}
+
+.celebration-tip {
+  position: fixed;
+  left: 50%;
+  bottom: calc(20px + env(safe-area-inset-bottom));
+  z-index: 401;
+  max-width: min(88vw, 440px);
+  margin: 0;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: rgba(7, 45, 39, 0.92);
+  color: #fff;
+  font-size: 17px;
+  font-weight: 650;
+  text-align: center;
+  transform: translateX(-50%);
+  box-shadow: 0 6px 18px rgba(3, 35, 29, 0.3);
 }
 
 @keyframes gentle-shake {

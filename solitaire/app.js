@@ -38,6 +38,8 @@
   const helpDoneButton = document.getElementById("help-done-button");
   const winOverlay = document.getElementById("win-overlay");
   const winNextNote = document.getElementById("win-next-note");
+  const celebrationPreview = document.getElementById("celebration-preview");
+  const celebrationTip = document.getElementById("celebration-tip");
   const playAgainButton = document.getElementById("play-again-button");
   const statusMessage = document.getElementById("status-message");
 
@@ -633,10 +635,26 @@
     renderFoundations();
     renderTableau();
     undoButton.disabled = undoStack.length === 0;
+    updateCelebrationPreview();
+  }
+
+  function isFullyWon() {
+    return game.foundations.every((foundation) => foundation.length === 13);
+  }
+
+  function hasClearPathToVictory() {
+    return !isFullyWon() && game.tableau.every((pile) => pile.every((card) => card.faceUp));
+  }
+
+  function updateCelebrationPreview() {
+    const showPreview = hasClearPathToVictory();
+    celebrationPreview.hidden = !showPreview;
+    celebrationPreview.setAttribute("aria-hidden", String(!showPreview));
+    celebrationTip.hidden = !showPreview;
   }
 
   function checkForWin() {
-    if (game.foundations.every((foundation) => foundation.length === 13)) {
+    if (isFullyWon()) {
       appShell.inert = true;
       appShell.setAttribute("aria-hidden", "true");
       winNextNote.hidden = !game.wasFirstGuaranteed;
