@@ -7,7 +7,7 @@
   <circle cx="890" cy="900" r="245" fill="#105648" opacity="0.55"/>
   <g transform="rotate(-4 512 512)">
     <rect x="242" y="120" width="540" height="784" rx="72" fill="#0a4338" opacity="0.25" transform="translate(18 24)"/>
-    <rect x="215" y="93" width="594" height="838" rx="99" fill="#ff00ff"/>
+    <rect x="188" y="66" width="648" height="892" rx="126" fill="#ff00ff"/>
     <rect x="242" y="120" width="540" height="784" rx="72" fill="#fffdf7"/>
     <text x="512" y="480" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-weight="900" fill="#000000" font-size="480">A</text>
     <text x="512" y="860" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" fill="#000000" font-size="585">&#9824;</text>

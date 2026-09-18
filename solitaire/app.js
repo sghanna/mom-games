@@ -330,6 +330,9 @@
       return false;
     }
 
+    const movingIds = cards.map((card) => card.id);
+    const oldRects = captureCardRects(movingIds);
+
     rememberForUndo();
     const movedCards = removeFromSource(source);
     movedCards.forEach((card) => { card.faceUp = true; });
@@ -342,9 +345,47 @@
     lastTap = { key: "", time: 0 };
     saveGame();
     render();
+    playSlideAnimation(oldRects);
     announce(`${cardName(leadCard)} moved.`);
     checkForWin();
     return true;
+  }
+
+  function captureCardRects(cardIds) {
+    const rects = new Map();
+    cardIds.forEach((id) => {
+      const element = board.querySelector(`[data-card-id="${id}"]`);
+      if (element) rects.set(id, element.getBoundingClientRect());
+    });
+    return rects;
+  }
+
+  function playSlideAnimation(oldRects) {
+    if (prefersReducedMotion()) return;
+    oldRects.forEach((oldRect, id) => {
+      const element = board.querySelector(`[data-card-id="${id}"]`);
+      if (!element) return;
+      const newRect = element.getBoundingClientRect();
+      const deltaX = oldRect.left - newRect.left;
+      const deltaY = oldRect.top - newRect.top;
+      if (!deltaX && !deltaY) return;
+      element.style.transition = "none";
+      element.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+      element.style.zIndex = "90";
+      void element.offsetWidth;
+      requestAnimationFrame(() => {
+        element.style.transition = "transform 0.4s ease";
+        element.style.transform = "";
+      });
+      element.addEventListener("transitionend", () => {
+        element.style.transition = "";
+        element.style.zIndex = "";
+      }, { once: true });
+    });
+  }
+
+  function prefersReducedMotion() {
+    return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   }
 
   function autoMove(location) {

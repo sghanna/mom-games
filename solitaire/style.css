@@ -11,9 +11,9 @@
   --shadow: 0 3px 8px rgba(3, 35, 29, 0.24), 0 1px 2px rgba(3, 35, 29, 0.24);
   --magenta: #ff00ff;
   --card-width: clamp(48px, calc((100vw - 48px) / 7), 160px);
-  --selected-ring: calc(var(--card-width) * 0.05);
+  --selected-ring: calc(var(--card-width) * 0.1);
   --card-height: calc(var(--card-width) * 1.42);
-  --rank-size: clamp(26px, calc(var(--card-width) * 0.64), 118px);
+  --rank-size: clamp(26px, calc(var(--card-width) * 0.89), 145px);
   --pile-gap: 4px;
   --down-step: clamp(15px, 2.3vh, 22px);
   --up-step: clamp(30px, max(4vh, calc(var(--card-width) * 0.5)), 90px);
@@ -366,7 +366,7 @@ button.card {
 .card-suit-big {
   font-family: Georgia, "Times New Roman", serif;
   line-height: 0.82;
-  font-size: clamp(24px, calc(var(--card-width) * 0.58), 106px);
+  font-size: clamp(24px, calc(var(--card-width) * 1.08), 175px);
 }
 
 .card.selected {
