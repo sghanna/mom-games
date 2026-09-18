@@ -1,5 +1,5 @@
 // Bump this cache version whenever a static file changes in a future update.
-const CACHE_NAME = "solitaire-v3";
+const CACHE_NAME = "solitaire-v4";
 const APP_FILES = [
   "./",
   "./index.html",

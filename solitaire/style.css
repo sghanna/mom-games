@@ -223,8 +223,15 @@ button:focus-visible,
   line-height: 1;
 }
 
+.slot-symbol {
+  color: rgba(255, 253, 247, 0.94);
+  font-size: calc(var(--card-width) * 0.64);
+  font-weight: 700;
+  text-shadow: 0 2px 5px rgba(3, 35, 29, 0.4);
+}
+
 .slot-symbol.red {
-  color: rgba(255, 216, 208, 0.55);
+  color: rgba(255, 122, 110, 0.96);
 }
 
 .recycle-mark {
@@ -343,7 +350,7 @@ button.card {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: calc(var(--rank-size) * 0.25);
+  gap: calc(var(--rank-size) * 0.2);
 }
 
 .card-rank {
@@ -558,12 +565,11 @@ button.card {
 
 .celebration i {
   position: absolute;
-  top: -30px;
+  top: -46px;
   left: var(--x);
-  width: 11px;
-  height: 20px;
-  border-radius: 3px;
-  background: var(--color);
+  font-size: 34px;
+  font-style: normal;
+  line-height: 1;
   opacity: 0;
   animation: confetti-fall 3.2s var(--delay) ease-in infinite;
 }

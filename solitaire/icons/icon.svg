@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title description">
   <title id="title">Solitaire app icon</title>
-  <desc id="description">A cream playing card with a gold spade on a deep green background.</desc>
+  <desc id="description">A cream playing card with a large gold ace above a large gold spade, matching the in-game card design.</desc>
   <rect width="1024" height="1024" fill="#176b5b"/>
   <circle cx="155" cy="145" r="170" fill="#2b7e6e" opacity="0.55"/>
   <circle cx="890" cy="900" r="245" fill="#105648" opacity="0.55"/>
-  <g transform="rotate(-7 512 512)">
-    <rect x="262" y="146" width="500" height="732" rx="68" fill="#0a4338" opacity="0.25" transform="translate(18 24)"/>
-    <rect x="262" y="146" width="500" height="732" rx="68" fill="#fffdf7"/>
-    <path d="M512 325c-43 66-151 136-151 240 0 78 62 126 132 86-8 58-30 99-71 129h180c-41-30-63-71-71-129 70 40 132-8 132-86 0-104-108-174-151-240z" fill="#d9a52f"/>
-    <path d="M335 245h41l54 126h-39l-9-24h-54l-9 24h-38l54-126zm4 73h32l-16-44-16 44z" fill="#176b5b"/>
-    <path d="M363 403c-13 19-43 40-43 68 0 22 18 36 38 24-2 17-9 28-20 37h51c-11-9-18-20-20-37 20 12 38-2 38-24 0-28-31-49-44-68z" fill="#d9a52f"/>
+  <g transform="rotate(-4 512 512)">
+    <rect x="242" y="120" width="540" height="784" rx="72" fill="#0a4338" opacity="0.25" transform="translate(18 24)"/>
+    <rect x="242" y="120" width="540" height="784" rx="72" fill="#fffdf7"/>
+    <text x="512" y="452" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-weight="900" fill="#d9a52f" font-size="320">A</text>
+    <text x="512" y="762" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" fill="#d9a52f" font-size="300">&#9824;</text>
   </g>
 </svg>
