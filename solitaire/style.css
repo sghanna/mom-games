@@ -595,11 +595,11 @@ button.card {
   position: absolute;
   top: -46px;
   left: var(--x);
-  font-size: 34px;
+  font-size: var(--suit-size);
   font-style: normal;
   line-height: 1;
   opacity: 0;
-  animation: confetti-fall 1.6s var(--delay) ease-in infinite;
+  animation: confetti-fall 3.2s var(--delay) ease-in infinite;
 }
 
 .celebration-preview {
