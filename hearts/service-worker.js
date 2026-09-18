@@ -1,5 +1,5 @@
 // Bump this cache version whenever a static file changes in a future update.
-const CACHE_NAME = "hearts-v17";
+const CACHE_NAME = "hearts-v18";
 const APP_FILES = [
   "./",
   "./index.html",

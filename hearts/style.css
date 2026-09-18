@@ -14,8 +14,8 @@
   --magenta: #ff00ff;
   --hand-card-width: clamp(48px, calc((100vw - 40px) / 7), 150px);
   --hand-card-height: calc(var(--hand-card-width) * 1.42);
-  --hand-rank-size: clamp(20px, calc(var(--hand-card-width) * 0.34), 51px);
-  --hand-index-suit-size: clamp(20px, calc(var(--hand-card-width) * 0.34), 51px);
+  --hand-rank-size: clamp(34.2px, calc(var(--hand-card-width) * 0.57), 85.5px);
+  --hand-index-suit-size: clamp(34.2px, calc(var(--hand-card-width) * 0.57), 85.5px);
   --hand-main-suit-size: clamp(44px, calc(var(--hand-card-width) * 0.94), 141px);
   --selected-glow-near: clamp(7px, calc(var(--hand-card-width) * 0.12), 18px);
   --selected-glow-far: clamp(18px, calc(var(--hand-card-width) * 0.28), 42px);
@@ -25,8 +25,8 @@
   --selected-glow-halo-spread: clamp(6px, calc(var(--hand-card-width) * 0.096), 15px);
   --trick-card-width: clamp(66px, 18vw, 130px);
   --trick-card-height: calc(var(--trick-card-width) * 1.42);
-  --trick-rank-size: clamp(20px, calc(var(--trick-card-width) * 0.34), 44px);
-  --trick-index-suit-size: clamp(20px, calc(var(--trick-card-width) * 0.34), 44px);
+  --trick-rank-size: clamp(37.62px, calc(var(--trick-card-width) * 0.57), 74.1px);
+  --trick-index-suit-size: clamp(37.62px, calc(var(--trick-card-width) * 0.57), 74.1px);
   --trick-main-suit-size: clamp(62px, calc(var(--trick-card-width) * 0.94), 122px);
 }
 

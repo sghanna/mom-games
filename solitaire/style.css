@@ -12,8 +12,8 @@
   --magenta: #ff00ff;
   --card-width: clamp(48px, calc((100vw - 48px) / 7), 160px);
   --card-height: calc(var(--card-width) * 1.42);
-  --card-rank-size: clamp(20px, calc(var(--card-width) * 0.34), 54px);
-  --card-index-suit-size: clamp(20px, calc(var(--card-width) * 0.34), 54px);
+  --card-rank-size: clamp(34.2px, calc(var(--up-step) * 1.14), 102.6px);
+  --card-index-suit-size: clamp(34.2px, calc(var(--up-step) * 1.14), 102.6px);
   --card-main-suit-size: clamp(44px, calc(var(--card-width) * 0.94), 150px);
   --selected-glow-near: clamp(7px, calc(var(--card-width) * 0.12), 18px);
   --selected-glow-far: clamp(18px, calc(var(--card-width) * 0.28), 45px);
