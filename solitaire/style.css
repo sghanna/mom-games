@@ -201,6 +201,7 @@ button:focus-visible,
   position: relative;
   width: var(--card-width);
   border-radius: calc(var(--card-width) * 0.105);
+  perspective: 600px;
 }
 
 .slot {
@@ -327,6 +328,15 @@ button.card {
 
 .card.face-up.red-card {
   color: var(--red);
+}
+
+.card.flip-reveal {
+  animation: card-flip 0.2s ease-out;
+}
+
+@keyframes card-flip {
+  from { transform: rotateY(90deg); }
+  to { transform: rotateY(0deg); }
 }
 
 .card.face-down {

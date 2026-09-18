@@ -48,6 +48,7 @@
   let selected = null;
   let clearPathMoveCount = null;
   const revealDelayIds = new Set();
+  const flipRevealIds = new Set();
   let lastTap = { key: "", time: 0 };
   let statusTimer = 0;
   let previousFocus = null;
@@ -354,8 +355,12 @@
     playSlideAnimation(oldRects);
     if (revealDelayIds.size) {
       window.setTimeout(() => {
+        if (!prefersReducedMotion()) {
+          revealDelayIds.forEach((id) => flipRevealIds.add(id));
+        }
         revealDelayIds.clear();
         render();
+        flipRevealIds.clear();
       }, 200);
     }
     announce(`${cardName(leadCard)} moved.`);
@@ -562,7 +567,7 @@
   function createCardElement(card, location, offset = "-2px", zIndex = 1, isNextReveal = false) {
     const displayFaceUp = card.faceUp && !revealDelayIds.has(card.id);
     const element = document.createElement(displayFaceUp ? "button" : "div");
-    element.className = `card ${displayFaceUp ? "face-up" : "face-down"}`;
+    element.className = `card ${displayFaceUp ? "face-up" : "face-down"}${flipRevealIds.has(card.id) ? " flip-reveal" : ""}`;
     element.style.top = offset;
     element.style.zIndex = String(zIndex);
     element.dataset.zone = location.zone;
