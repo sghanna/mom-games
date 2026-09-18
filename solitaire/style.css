@@ -350,10 +350,6 @@ button.card {
   box-shadow: inset 0 0 0 2px #7a0d5c, inset 0 0 0 3px rgba(255, 255, 255, 0.65), var(--shadow);
 }
 
-.card.face-down.hints-ace {
-  box-shadow: inset 0 0 0 2px #7a0d5c, inset 0 0 0 3px rgba(255, 255, 255, 0.65), 0 0 14px 2px rgba(255, 0, 255, 0.6), var(--shadow);
-}
-
 .back-mark {
   position: absolute;
   inset: 0;
