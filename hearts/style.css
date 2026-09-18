@@ -14,6 +14,7 @@
   --magenta: #ff00ff;
   --hand-card-width: clamp(48px, calc((100vw - 40px) / 7), 150px);
   --selected-ring: calc(var(--hand-card-width) * 0.05);
+  --selected-ring-peak: calc(var(--hand-card-width) * 0.1);
   --hand-card-height: calc(var(--hand-card-width) * 1.42);
   --rank-size: clamp(24px, calc(var(--hand-card-width) * 0.68), 105px);
   --suit-size: clamp(22px, calc(var(--hand-card-width) * 0.806), 125px);
@@ -543,6 +544,12 @@ button:focus-visible {
   --text-scale: 1.1;
   box-shadow: 0 0 0 var(--selected-ring) var(--magenta), 0 0 0 calc(var(--selected-ring) + 3px) rgba(255, 255, 255, 0.9), 0 10px 20px rgba(4, 31, 38, 0.45);
   transform: translateY(-6px);
+  animation: selected-pulse 1.1s ease-in-out 2;
+}
+
+@keyframes selected-pulse {
+  0%, 100% { box-shadow: 0 0 0 var(--selected-ring) var(--magenta), 0 0 0 calc(var(--selected-ring) + 3px) rgba(255, 255, 255, 0.9), 0 10px 20px rgba(4, 31, 38, 0.45); }
+  50% { box-shadow: 0 0 0 var(--selected-ring-peak) var(--magenta), 0 0 0 calc(var(--selected-ring-peak) + 3px) rgba(255, 255, 255, 0.9), 0 10px 20px rgba(4, 31, 38, 0.45); }
 }
 
 .playing-card:active:not(:disabled) {
