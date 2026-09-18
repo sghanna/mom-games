@@ -46,6 +46,7 @@
   let game = loadGame() || createNewGame();
   let undoStack = [];
   let selected = null;
+  let clearPathMoveCount = null;
   let lastTap = { key: "", time: 0 };
   let statusTimer = 0;
   let previousFocus = null;
@@ -374,7 +375,7 @@
       element.style.zIndex = "90";
       void element.offsetWidth;
       requestAnimationFrame(() => {
-        element.style.transition = "transform 0.4s ease";
+        element.style.transition = "transform 0.3s ease";
         element.style.transform = "";
       });
       element.addEventListener("transitionend", () => {
@@ -687,7 +688,13 @@
   }
 
   function updateCelebrationPreview() {
-    const showPreview = hasClearPathToVictory();
+    const clearPath = hasClearPathToVictory();
+    if (clearPath) {
+      if (clearPathMoveCount === null) clearPathMoveCount = game.moveCount;
+    } else {
+      clearPathMoveCount = null;
+    }
+    const showPreview = clearPath && game.moveCount === clearPathMoveCount;
     celebrationPreview.hidden = !showPreview;
     celebrationPreview.setAttribute("aria-hidden", String(!showPreview));
     celebrationTip.hidden = !showPreview;
