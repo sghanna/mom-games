@@ -47,6 +47,7 @@
   let undoStack = [];
   let selected = null;
   let clearPathMoveCount = null;
+  const revealDelayIds = new Set();
   let lastTap = { key: "", time: 0 };
   let statusTimer = 0;
   let previousFocus = null;
@@ -301,7 +302,10 @@
       const sourcePile = game.tableau[location.pileIndex];
       const cards = sourcePile.splice(location.cardIndex);
       const newTop = last(sourcePile);
-      if (newTop && !newTop.faceUp) newTop.faceUp = true;
+      if (newTop && !newTop.faceUp) {
+        newTop.faceUp = true;
+        revealDelayIds.add(newTop.id);
+      }
       return cards;
     }
     return [];
@@ -337,6 +341,7 @@
     rememberForUndo();
     const movedCards = removeFromSource(source);
     movedCards.forEach((card) => { card.faceUp = true; });
+    if (prefersReducedMotion()) revealDelayIds.clear();
 
     if (destinationZone === "tableau") game.tableau[destinationIndex].push(...movedCards);
     if (destinationZone === "foundation") game.foundations[destinationIndex].push(movedCards[0]);
@@ -347,6 +352,12 @@
     saveGame();
     render();
     playSlideAnimation(oldRects);
+    if (revealDelayIds.size) {
+      window.setTimeout(() => {
+        revealDelayIds.clear();
+        render();
+      }, 320);
+    }
     announce(`${cardName(leadCard)} moved.`);
     checkForWin();
     return true;
@@ -549,8 +560,9 @@
   }
 
   function createCardElement(card, location, offset = "-2px", zIndex = 1) {
-    const element = document.createElement(card.faceUp ? "button" : "div");
-    element.className = `card ${card.faceUp ? "face-up" : "face-down"}`;
+    const displayFaceUp = card.faceUp && !revealDelayIds.has(card.id);
+    const element = document.createElement(displayFaceUp ? "button" : "div");
+    element.className = `card ${displayFaceUp ? "face-up" : "face-down"}`;
     element.style.top = offset;
     element.style.zIndex = String(zIndex);
     element.dataset.zone = location.zone;
@@ -558,7 +570,7 @@
     element.dataset.cardIndex = String(location.cardIndex || 0);
     element.dataset.cardId = card.id;
 
-    if (card.faceUp) {
+    if (displayFaceUp) {
       const suit = suitFor(card);
       element.type = "button";
       element.classList.toggle("red-card", card.color === "red");
@@ -816,6 +828,54 @@
   });
   winOverlay.addEventListener("keydown", (event) => handleModalTab(event, winOverlay));
   playAgainButton.addEventListener("click", startNewGame);
+
+  function playPluckNote(ctx, frequency, startTime, duration) {
+    const oscillator = ctx.createOscillator();
+    oscillator.type = "triangle";
+    oscillator.frequency.value = frequency;
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0, startTime);
+    gain.gain.linearRampToValueAtTime(0.22, startTime + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+
+    oscillator.connect(gain);
+    gain.connect(ctx.destination);
+    oscillator.start(startTime);
+    oscillator.stop(startTime + duration + 0.05);
+  }
+
+  function playOpeningTune() {
+    try {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) return;
+      const ctx = new AudioContextClass();
+      if (ctx.state === "suspended") ctx.resume();
+
+      // An original gentle A-minor fingerstyle-style arpeggio (Am - G - F - E),
+      // written from scratch for this app - not based on any existing song.
+      const chords = [
+        [220.00, 261.63, 329.63, 440.00],
+        [196.00, 246.94, 293.66, 392.00],
+        [174.61, 220.00, 261.63, 349.23],
+        [164.81, 207.65, 246.94, 329.63]
+      ];
+      const noteDuration = 0.32;
+      const noteGap = 0.28;
+      let time = ctx.currentTime + 0.02;
+      chords.forEach((chord) => {
+        chord.forEach((frequency) => {
+          playPluckNote(ctx, frequency, time, noteDuration);
+          time += noteGap;
+        });
+      });
+      window.setTimeout(() => ctx.close(), (time - ctx.currentTime + 1) * 1000);
+    } catch (error) {
+      // If audio isn't available in this context, the game still works fine without it.
+    }
+  }
+
+  document.addEventListener("pointerdown", playOpeningTune, { once: true });
 
   render();
   saveGame();
