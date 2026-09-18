@@ -533,9 +533,15 @@ button:focus-visible {
 }
 
 .playing-card.selected {
-  z-index: 3;
-  box-shadow: 0 0 0 4px var(--gold), 0 7px 15px rgba(4, 31, 38, 0.38);
-  transform: translateY(-5px);
+  z-index: 60;
+  box-shadow: 0 0 0 8px var(--gold), 0 0 0 11px rgba(255, 255, 255, 0.9), 0 10px 20px rgba(4, 31, 38, 0.45);
+  transform: translateY(-6px);
+  animation: selected-pulse 1.1s ease-in-out infinite;
+}
+
+@keyframes selected-pulse {
+  0%, 100% { box-shadow: 0 0 0 8px var(--gold), 0 0 0 11px rgba(255, 255, 255, 0.9), 0 10px 20px rgba(4, 31, 38, 0.45); }
+  50% { box-shadow: 0 0 0 11px var(--gold), 0 0 0 14px rgba(255, 255, 255, 0.9), 0 10px 20px rgba(4, 31, 38, 0.45); }
 }
 
 .playing-card:active:not(:disabled) {
@@ -554,43 +560,28 @@ button:focus-visible {
   cursor: default;
 }
 
-.card-corner {
+.card-face {
   position: absolute;
-  top: calc(var(--hand-card-width) * 0.06);
-  left: calc(var(--hand-card-width) * 0.06);
+  inset: 3% 4%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  gap: calc(var(--hand-card-width) * 0.02);
+}
+
+.card-rank {
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(18px, calc(var(--hand-card-width) * 0.4), 38px);
   font-weight: 900;
   letter-spacing: -0.03em;
-  line-height: 0.8;
+  line-height: 0.82;
+  font-size: clamp(26px, calc(var(--hand-card-width) * 0.64), 110px);
 }
 
-.card-corner.bottom {
-  top: auto;
-  right: calc(var(--hand-card-width) * 0.06);
-  bottom: calc(var(--hand-card-width) * 0.06);
-  left: auto;
-  transform: rotate(180deg);
-}
-
-.corner-suit {
-  margin-top: calc(var(--hand-card-width) * 0.05);
-  font-size: 0.82em;
-  font-weight: 500;
-}
-
-.card-center-suit {
-  position: absolute;
-  inset: 20% 10%;
-  display: grid;
-  place-items: center;
+.card-suit-big {
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(24px, calc(var(--hand-card-width) * 0.6), 64px);
-  line-height: 1;
-  opacity: 0.95;
+  line-height: 0.82;
+  font-size: clamp(24px, calc(var(--hand-card-width) * 0.58), 100px);
 }
 
 .trick-card {
@@ -600,25 +591,12 @@ button:focus-visible {
   animation: card-arrive 180ms ease-out both;
 }
 
-.trick-card .card-corner {
-  top: calc(var(--trick-card-width) * 0.06);
-  left: calc(var(--trick-card-width) * 0.06);
-  font-size: clamp(18px, calc(var(--trick-card-width) * 0.4), 34px);
+.trick-card .card-rank {
+  font-size: clamp(24px, calc(var(--trick-card-width) * 0.64), 96px);
 }
 
-.trick-card .card-corner.bottom {
-  top: auto;
-  right: calc(var(--trick-card-width) * 0.06);
-  bottom: calc(var(--trick-card-width) * 0.06);
-  left: auto;
-}
-
-.trick-card .corner-suit {
-  margin-top: calc(var(--trick-card-width) * 0.05);
-}
-
-.trick-card .card-center-suit {
-  font-size: clamp(26px, calc(var(--trick-card-width) * 0.6), 58px);
+.trick-card .card-suit-big {
+  font-size: clamp(22px, calc(var(--trick-card-width) * 0.58), 88px);
 }
 
 .primary-button,

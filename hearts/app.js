@@ -531,9 +531,10 @@
     }
     element.setAttribute("aria-label", options.ariaLabel || cardName(card));
     element.innerHTML = `
-      <span class="card-corner" aria-hidden="true"><span>${rankLabel(card.rank)}</span><span class="corner-suit">${suit.symbol}</span></span>
-      <span class="card-center-suit" aria-hidden="true">${suit.symbol}</span>
-      <span class="card-corner bottom" aria-hidden="true"><span>${rankLabel(card.rank)}</span><span class="corner-suit">${suit.symbol}</span></span>
+      <span class="card-face" aria-hidden="true">
+        <span class="card-rank">${rankLabel(card.rank)}</span>
+        <span class="card-suit-big">${suit.symbol}</span>
+      </span>
     `;
     return element;
   }
