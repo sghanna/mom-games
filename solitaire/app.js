@@ -356,7 +356,7 @@
       window.setTimeout(() => {
         revealDelayIds.clear();
         render();
-      }, 320);
+      }, 200);
     }
     announce(`${cardName(leadCard)} moved.`);
     checkForWin();
