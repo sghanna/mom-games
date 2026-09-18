@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title description">
   <title id="title">Hearts app icon</title>
-  <desc id="description">A cream playing card with a red heart on a blue-green background.</desc>
+  <desc id="description">A cream playing card, selected with a magenta ring, showing a large red ace above a large red heart.</desc>
   <rect width="1024" height="1024" fill="#245f70"/>
   <circle cx="152" cy="148" r="178" fill="#3f8191" opacity="0.58"/>
   <circle cx="884" cy="892" r="252" fill="#194b59" opacity="0.58"/>
   <g transform="rotate(7 512 512)">
     <rect x="262" y="146" width="500" height="732" rx="68" fill="#123943" opacity="0.28" transform="translate(18 24)"/>
+    <rect x="212" y="96" width="600" height="832" rx="118" fill="#ff00ff"/>
     <rect x="262" y="146" width="500" height="732" rx="68" fill="#fffdf7"/>
-    <path d="M512 744C447 686 349 608 349 494c0-78 51-132 122-132 41 0 73 21 93 53 20-32 52-53 93-53 71 0 122 54 122 132 0 114-98 192-163 250l-52 45-52-45z" fill="#bd4247" transform="translate(-52 -18) scale(1.1)"/>
-    <path d="M336 245h41l54 126h-39l-9-24h-54l-9 24h-38l54-126zm4 73h32l-16-44-16 44z" fill="#245f70"/>
-    <path d="M362 404c-24-23-62-52-62-94 0-29 19-49 46-49 16 0 28 8 36 20 8-12 20-20 36-20 27 0 46 20 46 49 0 42-38 71-62 94l-20 17-20-17z" fill="#bd4247"/>
+    <text x="512" y="480" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-weight="900" fill="#9c1c22" font-size="480">A</text>
+    <text x="512" y="860" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" fill="#9c1c22" font-size="585">&#9829;</text>
   </g>
 </svg>
