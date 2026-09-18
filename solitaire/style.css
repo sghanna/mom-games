@@ -363,7 +363,7 @@ button.card {
 
 .card-face {
   position: absolute;
-  inset: 3% 4%;
+  inset: max(5px, 3%) 4%;
   display: flex;
   flex-direction: column;
   align-items: center;
