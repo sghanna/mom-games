@@ -479,8 +479,10 @@
       element.draggable = true;
       element.setAttribute("aria-label", `${cardName(card)}. Tap to select; double-tap to move automatically.`);
       element.innerHTML = `
-        <span class="card-corner" aria-hidden="true"><span>${RANKS[card.rank]}</span><span class="corner-suit">${suit.symbol}</span></span>
-        <span class="card-center-suit" aria-hidden="true">${suit.symbol}</span>
+        <span class="card-face" aria-hidden="true">
+          <span class="card-rank">${RANKS[card.rank]}</span>
+          <span class="card-suit-big">${suit.symbol}</span>
+        </span>
       `;
 
       if (selected && selected.cardId === card.id) element.classList.add("selected");

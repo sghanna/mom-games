@@ -13,7 +13,7 @@
   --card-height: calc(var(--card-width) * 1.42);
   --pile-gap: 4px;
   --down-step: clamp(15px, 2.3vh, 22px);
-  --up-step: clamp(28px, 4vh, 44px);
+  --up-step: clamp(30px, max(4vh, calc(var(--card-width) * 0.5)), 90px);
 }
 
 * {
@@ -335,45 +335,45 @@ button.card {
   text-shadow: 0 1px 2px rgba(6, 53, 83, 0.45);
 }
 
-.card-corner {
+.card-face {
   position: absolute;
-  top: calc(var(--card-width) * 0.06);
-  left: calc(var(--card-width) * 0.06);
+  inset: 3% 4%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  gap: calc(var(--card-width) * 0.02);
+}
+
+.card-rank {
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(18px, calc(var(--card-width) * 0.42), 40px);
   font-weight: 900;
   letter-spacing: -0.03em;
-  line-height: 0.8;
+  line-height: 0.82;
+  font-size: clamp(26px, calc(var(--card-width) * 0.64), 118px);
 }
 
-.corner-suit {
-  margin-top: calc(var(--card-width) * 0.05);
-  font-size: 0.82em;
-  font-weight: 500;
-}
-
-.card-center-suit {
-  position: absolute;
-  inset: 18% 8% 8%;
-  display: grid;
-  place-items: center;
+.card-suit-big {
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(24px, calc(var(--card-width) * 0.62), 66px);
-  line-height: 1;
-  opacity: 0.96;
+  line-height: 0.82;
+  font-size: clamp(24px, calc(var(--card-width) * 0.58), 106px);
 }
 
 .card.selected {
+  z-index: 60;
   border-color: #fff4c8;
-  box-shadow: 0 0 0 4px var(--gold), 0 7px 15px rgba(3, 35, 29, 0.38);
-  transform: translateY(-3px);
+  box-shadow: 0 0 0 8px var(--gold), 0 0 0 11px rgba(255, 255, 255, 0.9), 0 10px 20px rgba(3, 35, 29, 0.45);
+  transform: translateY(-6px);
+  animation: selected-pulse 1.1s ease-in-out infinite;
 }
 
 .card.selected-chain:not(.selected) {
-  box-shadow: 0 0 0 2px rgba(242, 195, 94, 0.8), var(--shadow);
+  box-shadow: 0 0 0 6px rgba(242, 195, 94, 0.85), var(--shadow);
+}
+
+@keyframes selected-pulse {
+  0%, 100% { box-shadow: 0 0 0 8px var(--gold), 0 0 0 11px rgba(255, 255, 255, 0.9), 0 10px 20px rgba(3, 35, 29, 0.45); }
+  50% { box-shadow: 0 0 0 11px var(--gold), 0 0 0 14px rgba(255, 255, 255, 0.9), 0 10px 20px rgba(3, 35, 29, 0.45); }
 }
 
 .pile.invalid {
