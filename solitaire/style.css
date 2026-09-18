@@ -11,6 +11,7 @@
   --shadow: 0 3px 8px rgba(3, 35, 29, 0.24), 0 1px 2px rgba(3, 35, 29, 0.24);
   --card-width: clamp(48px, calc((100vw - 48px) / 7), 160px);
   --card-height: calc(var(--card-width) * 1.42);
+  --rank-size: clamp(26px, calc(var(--card-width) * 0.64), 118px);
   --pile-gap: 4px;
   --down-step: clamp(15px, 2.3vh, 22px);
   --up-step: clamp(30px, max(4vh, calc(var(--card-width) * 0.5)), 90px);
@@ -342,7 +343,7 @@ button.card {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: calc(var(--card-width) * 0.02);
+  gap: calc(var(--rank-size) * 0.25);
 }
 
 .card-rank {
@@ -350,7 +351,7 @@ button.card {
   font-weight: 900;
   letter-spacing: -0.03em;
   line-height: 0.82;
-  font-size: clamp(26px, calc(var(--card-width) * 0.64), 118px);
+  font-size: var(--rank-size);
 }
 
 .card-suit-big {
