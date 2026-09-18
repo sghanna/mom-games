@@ -37,6 +37,7 @@
   const helpCloseButton = document.getElementById("help-close-button");
   const helpDoneButton = document.getElementById("help-done-button");
   const winOverlay = document.getElementById("win-overlay");
+  const winNextNote = document.getElementById("win-next-note");
   const playAgainButton = document.getElementById("play-again-button");
   const statusMessage = document.getElementById("status-message");
 
@@ -122,7 +123,8 @@
       waste: [],
       foundations: Array.from({ length: 4 }, () => []),
       tableau,
-      moveCount: 0
+      moveCount: 0,
+      wasFirstGuaranteed: false
     };
   }
 
@@ -130,7 +132,9 @@
     const playingFirstGame = !hasPlayedBefore();
     const deck = playingFirstGame ? buildFirstGameDeck() : shuffle(createDeck());
     if (playingFirstGame) markPlayedBefore();
-    return dealFromDeck(deck);
+    const dealt = dealFromDeck(deck);
+    dealt.wasFirstGuaranteed = playingFirstGame;
+    return dealt;
   }
 
   function isValidSavedGame(candidate) {
@@ -635,6 +639,7 @@
     if (game.foundations.every((foundation) => foundation.length === 13)) {
       appShell.inert = true;
       appShell.setAttribute("aria-hidden", "true");
+      winNextNote.hidden = !game.wasFirstGuaranteed;
       winOverlay.hidden = false;
       winOverlay.setAttribute("aria-hidden", "false");
       window.setTimeout(() => playAgainButton.focus(), 80);

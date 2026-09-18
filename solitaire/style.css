@@ -225,7 +225,7 @@ button:focus-visible,
 
 .slot-symbol {
   color: rgba(255, 253, 247, 0.94);
-  font-size: calc(var(--card-width) * 0.64);
+  font-size: calc(var(--card-width) * 1.28);
   font-weight: 700;
   text-shadow: 0 2px 5px rgba(3, 35, 29, 0.4);
 }
@@ -541,6 +541,14 @@ button.card {
   font-size: 20px;
   font-weight: 500;
   line-height: 1.5;
+}
+
+.win-next-note {
+  margin-top: -8px;
+  padding-top: 10px;
+  border-top: 1px solid #dfe7e3;
+  font-style: italic;
+  opacity: 0.85;
 }
 
 .win-suits {
