@@ -379,7 +379,6 @@
       });
       element.addEventListener("transitionend", () => {
         element.style.transition = "";
-        element.style.zIndex = "";
       }, { once: true });
     });
   }
