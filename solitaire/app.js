@@ -559,7 +559,7 @@
     statusTimer = window.setTimeout(() => statusMessage.classList.remove("show"), visible ? 1800 : 100);
   }
 
-  function createCardElement(card, location, offset = "-2px", zIndex = 1) {
+  function createCardElement(card, location, offset = "-2px", zIndex = 1, isNextReveal = false) {
     const displayFaceUp = card.faceUp && !revealDelayIds.has(card.id);
     const element = document.createElement(displayFaceUp ? "button" : "div");
     element.className = `card ${displayFaceUp ? "face-up" : "face-down"}`;
@@ -589,7 +589,9 @@
       }
     } else {
       element.setAttribute("aria-hidden", "true");
-      element.innerHTML = '<span class="back-mark">♠</span>';
+      const showCandyHint = isNextReveal && card.rank === 1;
+      element.classList.toggle("hints-ace", showCandyHint);
+      element.innerHTML = `<span class="back-mark">${showCandyHint ? "&#127852;" : "&#9824;"}</span>`;
     }
     return element;
   }
@@ -668,11 +670,14 @@
       pile.setAttribute("role", "group");
       pile.tabIndex = -1;
 
+      let nextRevealCard = null;
+      cards.forEach((card) => { if (!card.faceUp) nextRevealCard = card; });
+
       let faceDownBefore = 0;
       let faceUpBefore = 0;
       cards.forEach((card, cardIndex) => {
         const offset = `calc(${faceDownBefore} * var(--down-step) + ${faceUpBefore} * var(--up-step) - 2px)`;
-        const element = createCardElement(card, { zone: "tableau", pileIndex, cardIndex }, offset, cardIndex + 1);
+        const element = createCardElement(card, { zone: "tableau", pileIndex, cardIndex }, offset, cardIndex + 1, card === nextRevealCard);
         pile.appendChild(element);
         if (card.faceUp) faceUpBefore += 1;
         else faceDownBefore += 1;
