@@ -1,6 +1,6 @@
 {
-  "name": "Solitaire",
-  "short_name": "Solitaire",
+  "name": "Granny Solitaire",
+  "short_name": "Granny Solitaire",
   "description": "A calm, ad-free Klondike Solitaire game.",
   "start_url": "./",
   "scope": "./",
