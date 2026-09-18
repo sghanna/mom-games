@@ -1,4 +1,4 @@
-# Granny Solitaire and Hearts: Development Recap
+# Mom Solitaire and Hearts: Development Recap
 
 Dates: 2026-09-17 to 2026-09-18
 Repo: ~/mom-games (github.com/sghanna/mom-games)
@@ -15,7 +15,7 @@ Three things were baked into that from the start: a hard deadline, a specific co
 ## What got built
 
 - A hosting approach with zero App Store friction: static web apps installed via Safari's "Add to Home Screen," served free from GitHub Pages, fully offline-capable via a service worker. No Apple Developer account, no App Store review, no ads because nothing third-party is loaded at all (the CSP blocks outside network calls outright).
-- Granny Solitaire: full Klondike rules, tap-to-select-then-tap-destination controls (no fiddly drag needed on a phone), undo, a solver-verified guaranteed-winnable first game, a "clear path to victory" celebration preview, an original opening tune, and a jumbo card-face design built around your mom's vision needs.
+- Mom Solitaire: full Klondike rules, tap-to-select-then-tap-destination controls (no fiddly drag needed on a phone), undo, a solver-verified guaranteed-winnable first game, a "clear path to victory" celebration preview, an original opening tune, and a jumbo card-face design built around your mom's vision needs.
 - Hearts: full 4-player rules including passing, shooting the moon, and three heuristic AI opponents, built to the same visual standard.
 - A card-game-builder skill (~/.claude/skills/card-game-builder/) so the next game starts from the lessons here instead of relearning them.
 
