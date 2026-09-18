@@ -9,7 +9,9 @@
   --gold: #f2c35e;
   --line: rgba(255, 255, 255, 0.34);
   --shadow: 0 3px 8px rgba(3, 35, 29, 0.24), 0 1px 2px rgba(3, 35, 29, 0.24);
+  --magenta: #ff00ff;
   --card-width: clamp(48px, calc((100vw - 48px) / 7), 160px);
+  --selected-ring: calc(var(--card-width) * 0.05);
   --card-height: calc(var(--card-width) * 1.42);
   --rank-size: clamp(26px, calc(var(--card-width) * 0.64), 118px);
   --pile-gap: 4px;
@@ -369,19 +371,20 @@ button.card {
 
 .card.selected {
   z-index: 60;
-  border-color: #fff4c8;
-  box-shadow: 0 0 0 8px var(--gold), 0 0 0 11px rgba(255, 255, 255, 0.9), 0 10px 20px rgba(3, 35, 29, 0.45);
-  transform: translateY(-6px);
+  border-color: var(--magenta);
+  box-shadow: 0 0 0 var(--selected-ring) var(--magenta), 0 0 0 calc(var(--selected-ring) + 3px) rgba(255, 255, 255, 0.9), 0 10px 20px rgba(3, 35, 29, 0.45);
+  transform: translateY(-6px) scale(1.1);
   animation: selected-pulse 1.1s ease-in-out infinite;
 }
 
 .card.selected-chain:not(.selected) {
-  box-shadow: 0 0 0 6px rgba(242, 195, 94, 0.85), var(--shadow);
+  box-shadow: 0 0 0 var(--selected-ring) rgba(255, 0, 255, 0.85), var(--shadow);
+  transform: scale(1.1);
 }
 
 @keyframes selected-pulse {
-  0%, 100% { box-shadow: 0 0 0 8px var(--gold), 0 0 0 11px rgba(255, 255, 255, 0.9), 0 10px 20px rgba(3, 35, 29, 0.45); }
-  50% { box-shadow: 0 0 0 11px var(--gold), 0 0 0 14px rgba(255, 255, 255, 0.9), 0 10px 20px rgba(3, 35, 29, 0.45); }
+  0%, 100% { box-shadow: 0 0 0 var(--selected-ring) var(--magenta), 0 0 0 calc(var(--selected-ring) + 3px) rgba(255, 255, 255, 0.9), 0 10px 20px rgba(3, 35, 29, 0.45); }
+  50% { box-shadow: 0 0 0 calc(var(--selected-ring) * 1.3) var(--magenta), 0 0 0 calc(var(--selected-ring) * 1.3 + 3px) rgba(255, 255, 255, 0.9), 0 10px 20px rgba(3, 35, 29, 0.45); }
 }
 
 .pile.invalid {
