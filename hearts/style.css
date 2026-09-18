@@ -544,7 +544,7 @@ button:focus-visible {
   --text-scale: 1.1;
   box-shadow: 0 0 0 var(--selected-ring) var(--magenta), 0 0 0 calc(var(--selected-ring) + 3px) rgba(255, 255, 255, 0.9), 0 10px 20px rgba(4, 31, 38, 0.45);
   transform: translateY(-6px);
-  animation: selected-pulse 1.1s ease-in-out 2;
+  animation: none;
 }
 
 @keyframes selected-pulse {
