@@ -13,21 +13,15 @@
   --shadow: 0 3px 8px rgba(5, 35, 43, 0.28), 0 1px 2px rgba(5, 35, 43, 0.22);
   --magenta: #ff00ff;
   --hand-card-width: clamp(48px, calc((100vw - 40px) / 7), 150px);
+  --selected-ring: calc(var(--hand-card-width) * 0.05);
+  --selected-ring-peak: calc(var(--hand-card-width) * 0.1);
   --hand-card-height: calc(var(--hand-card-width) * 1.42);
-  --hand-rank-size: clamp(34.2px, calc(var(--hand-card-width) * 0.57), 85.5px);
-  --hand-index-suit-size: clamp(34.2px, calc(var(--hand-card-width) * 0.57), 85.5px);
-  --hand-main-suit-size: clamp(44px, calc(var(--hand-card-width) * 0.94), 141px);
-  --selected-glow-near: clamp(7px, calc(var(--hand-card-width) * 0.12), 18px);
-  --selected-glow-far: clamp(18px, calc(var(--hand-card-width) * 0.28), 42px);
-  --selected-glow-halo: clamp(28px, calc(var(--hand-card-width) * 0.44), 66px);
-  --selected-glow-spread: clamp(2px, calc(var(--hand-card-width) * 0.035), 6px);
-  --selected-glow-wide-spread: clamp(4px, calc(var(--hand-card-width) * 0.07), 11px);
-  --selected-glow-halo-spread: clamp(6px, calc(var(--hand-card-width) * 0.096), 15px);
+  --rank-size: clamp(24px, calc(var(--hand-card-width) * 0.68), 105px);
+  --suit-size: clamp(22px, calc(var(--hand-card-width) * 0.806), 125px);
   --trick-card-width: clamp(66px, 18vw, 130px);
   --trick-card-height: calc(var(--trick-card-width) * 1.42);
-  --trick-rank-size: clamp(37.62px, calc(var(--trick-card-width) * 0.57), 74.1px);
-  --trick-index-suit-size: clamp(37.62px, calc(var(--trick-card-width) * 0.57), 74.1px);
-  --trick-main-suit-size: clamp(62px, calc(var(--trick-card-width) * 0.94), 122px);
+  --trick-rank-size: clamp(22px, calc(var(--trick-card-width) * 0.68), 90px);
+  --trick-suit-size: clamp(20px, calc(var(--trick-card-width) * 0.806), 105px);
 }
 
 * {
@@ -521,10 +515,6 @@ button:focus-visible {
 }
 
 .playing-card {
-  --face-card-width: var(--hand-card-width);
-  --face-rank-size: var(--hand-rank-size);
-  --face-index-suit-size: var(--hand-index-suit-size);
-  --face-main-suit-size: var(--hand-main-suit-size);
   position: relative;
   width: var(--hand-card-width);
   height: var(--hand-card-height);
@@ -552,14 +542,14 @@ button:focus-visible {
 .playing-card.selected {
   z-index: 60;
   --text-scale: 1.1;
-  border-color: var(--magenta);
-  box-shadow:
-    0 0 var(--selected-glow-near) var(--selected-glow-spread) rgba(255, 0, 255, 0.72),
-    0 0 var(--selected-glow-far) var(--selected-glow-wide-spread) rgba(255, 0, 255, 0.36),
-    0 0 var(--selected-glow-halo) var(--selected-glow-halo-spread) rgba(255, 0, 255, 0.16),
-    0 10px 20px rgba(4, 31, 38, 0.45);
+  box-shadow: 0 0 0 var(--selected-ring) var(--magenta), 0 0 0 calc(var(--selected-ring) + 3px) rgba(255, 255, 255, 0.9), 0 10px 20px rgba(4, 31, 38, 0.45);
   transform: translateY(-6px);
   animation: none;
+}
+
+@keyframes selected-pulse {
+  0%, 100% { box-shadow: 0 0 0 var(--selected-ring) var(--magenta), 0 0 0 calc(var(--selected-ring) + 3px) rgba(255, 255, 255, 0.9), 0 10px 20px rgba(4, 31, 38, 0.45); }
+  50% { box-shadow: 0 0 0 var(--selected-ring-peak) var(--magenta), 0 0 0 calc(var(--selected-ring-peak) + 3px) rgba(255, 255, 255, 0.9), 0 10px 20px rgba(4, 31, 38, 0.45); }
 }
 
 .playing-card:active:not(:disabled) {
@@ -581,54 +571,44 @@ button:focus-visible {
 .card-face {
   position: absolute;
   inset: 0;
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  justify-items: center;
-  padding: clamp(2px, calc(var(--face-card-width) * 0.05), 8px) clamp(1px, calc(var(--face-card-width) * 0.025), 4px);
-}
-
-.card-index {
-  display: inline-flex;
-  max-width: 100%;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: clamp(1px, calc(var(--face-card-width) * 0.025), 4px);
-  white-space: nowrap;
+  gap: max(10px, calc(var(--rank-size) * 0.08));
 }
 
 .card-rank {
   font-family: Georgia, "Times New Roman", serif;
   font-weight: 900;
-  letter-spacing: -0.08em;
-  line-height: 0.9;
-  font-size: calc(var(--face-rank-size) * var(--text-scale, 1));
-}
-
-.card-suit-small {
-  font-family: Georgia, "Times New Roman", serif;
-  line-height: 0.9;
-  font-size: calc(var(--face-index-suit-size) * var(--text-scale, 1));
+  letter-spacing: -0.03em;
+  line-height: 0.82;
+  font-size: calc(var(--rank-size) * var(--text-scale, 1));
 }
 
 .card-suit-big {
-  display: grid;
-  width: 100%;
-  min-height: 0;
-  place-items: center;
   font-family: Georgia, "Times New Roman", serif;
-  line-height: 0.76;
-  font-size: calc(var(--face-main-suit-size) * var(--text-scale, 1));
+  line-height: 0.82;
+  font-size: calc(var(--suit-size) * var(--text-scale, 1));
 }
 
 .trick-card {
-  --face-card-width: var(--trick-card-width);
-  --face-rank-size: var(--trick-rank-size);
-  --face-index-suit-size: var(--trick-index-suit-size);
-  --face-main-suit-size: var(--trick-main-suit-size);
   width: 100%;
   height: 100%;
   pointer-events: none;
   animation: card-arrive 180ms ease-out both;
+}
+
+.trick-card .card-face {
+  gap: max(10px, calc(var(--trick-rank-size) * 0.08));
+}
+
+.trick-card .card-rank {
+  font-size: calc(var(--trick-rank-size) * var(--text-scale, 1));
+}
+
+.trick-card .card-suit-big {
+  font-size: calc(var(--trick-suit-size) * var(--text-scale, 1));
 }
 
 .primary-button,
