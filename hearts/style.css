@@ -13,8 +13,12 @@
   --shadow: 0 3px 8px rgba(5, 35, 43, 0.28), 0 1px 2px rgba(5, 35, 43, 0.22);
   --magenta: #ff00ff;
   --hand-card-width: clamp(48px, calc((100vw - 40px) / 7), 150px);
-  --selected-ring: calc(var(--hand-card-width) * 0.05);
-  --selected-ring-peak: calc(var(--hand-card-width) * 0.1);
+  --selected-glow-near: clamp(7px, calc(var(--hand-card-width) * 0.12), 18px);
+  --selected-glow-far: clamp(18px, calc(var(--hand-card-width) * 0.28), 42px);
+  --selected-glow-halo: clamp(28px, calc(var(--hand-card-width) * 0.44), 66px);
+  --selected-glow-spread: clamp(2px, calc(var(--hand-card-width) * 0.035), 6px);
+  --selected-glow-wide-spread: clamp(4px, calc(var(--hand-card-width) * 0.07), 11px);
+  --selected-glow-halo-spread: clamp(6px, calc(var(--hand-card-width) * 0.096), 15px);
   --hand-card-height: calc(var(--hand-card-width) * 1.42);
   --rank-size: clamp(24px, calc(var(--hand-card-width) * 0.68), 105px);
   --suit-size: clamp(22px, calc(var(--hand-card-width) * 0.806), 125px);
@@ -541,15 +545,13 @@ button:focus-visible {
 
 .playing-card.selected {
   z-index: 60;
-  --text-scale: 1.1;
-  box-shadow: 0 0 0 var(--selected-ring) var(--magenta), 0 0 0 calc(var(--selected-ring) + 3px) rgba(255, 255, 255, 0.9), 0 10px 20px rgba(4, 31, 38, 0.45);
+  box-shadow:
+    0 0 var(--selected-glow-near) var(--selected-glow-spread) rgba(255, 0, 255, 0.72),
+    0 0 var(--selected-glow-far) var(--selected-glow-wide-spread) rgba(255, 0, 255, 0.36),
+    0 0 var(--selected-glow-halo) var(--selected-glow-halo-spread) rgba(255, 0, 255, 0.16),
+    0 10px 20px rgba(4, 31, 38, 0.45);
   transform: translateY(-6px);
   animation: none;
-}
-
-@keyframes selected-pulse {
-  0%, 100% { box-shadow: 0 0 0 var(--selected-ring) var(--magenta), 0 0 0 calc(var(--selected-ring) + 3px) rgba(255, 255, 255, 0.9), 0 10px 20px rgba(4, 31, 38, 0.45); }
-  50% { box-shadow: 0 0 0 var(--selected-ring-peak) var(--magenta), 0 0 0 calc(var(--selected-ring-peak) + 3px) rgba(255, 255, 255, 0.9), 0 10px 20px rgba(4, 31, 38, 0.45); }
 }
 
 .playing-card:active:not(:disabled) {
@@ -568,28 +570,39 @@ button:focus-visible {
   cursor: default;
 }
 
+/* The SVG scales itself to whatever box the card occupies, so hand cards and
+   trick cards share one set of rules - no per-context size variables needed. */
 .card-face {
   position: absolute;
   inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: max(10px, calc(var(--rank-size) * 0.08));
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
+.card-rank,
+.card-index-suit,
+.card-main-suit {
+  fill: currentColor;
+  text-anchor: middle;
+}
+
+/* Verdana: drawn for screen legibility - wide forms, open counters, an
+   unmistakable 1 vs 0. Chosen over a serif for exactly that reason. */
 .card-rank {
-  font-family: Georgia, "Times New Roman", serif;
-  font-weight: 900;
-  letter-spacing: -0.03em;
-  line-height: 0.82;
-  font-size: calc(var(--rank-size) * var(--text-scale, 1));
+  font-family: Verdana, Geneva, "DejaVu Sans", sans-serif;
+  font-size: 54px;
+  font-weight: 700;
 }
 
-.card-suit-big {
+.card-index-suit {
   font-family: Georgia, "Times New Roman", serif;
-  line-height: 0.82;
-  font-size: calc(var(--suit-size) * var(--text-scale, 1));
+  font-size: 42px;
+}
+
+.card-main-suit {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 98px;
 }
 
 .trick-card {
@@ -597,18 +610,6 @@ button:focus-visible {
   height: 100%;
   pointer-events: none;
   animation: card-arrive 180ms ease-out both;
-}
-
-.trick-card .card-face {
-  gap: max(10px, calc(var(--trick-rank-size) * 0.08));
-}
-
-.trick-card .card-rank {
-  font-size: calc(var(--trick-rank-size) * var(--text-scale, 1));
-}
-
-.trick-card .card-suit-big {
-  font-size: calc(var(--trick-suit-size) * var(--text-scale, 1));
 }
 
 .primary-button,

@@ -581,11 +581,16 @@
       element.classList.toggle("red-card", card.color === "red");
       element.draggable = true;
       element.setAttribute("aria-label", `${cardName(card)}. Tap to select; double-tap to move automatically.`);
+      const rankLabel = RANKS[card.rank];
+      // Two-character ranks ("10") get condensed to a fixed width so they can
+      // never push the index suit off the card edge.
+      const fitWide = rankLabel.length > 1 ? ' textLength="50" lengthAdjust="spacingAndGlyphs"' : "";
       element.innerHTML = `
-        <span class="card-face" aria-hidden="true">
-          <span class="card-rank">${RANKS[card.rank]}</span>
-          <span class="card-suit-big">${suit.symbol}</span>
-        </span>
+        <svg class="card-face" viewBox="0 0 100 142" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
+          <text class="card-rank" x="28" y="52"${fitWide}>${rankLabel}</text>
+          <text class="card-index-suit" x="76" y="48">${suit.symbol}</text>
+          <text class="card-main-suit" x="50" y="130">${suit.symbol}</text>
+        </svg>
       `;
 
       if (selected && selected.cardId === card.id) element.classList.add("selected");

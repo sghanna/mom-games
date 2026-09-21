@@ -11,8 +11,12 @@
   --shadow: 0 3px 8px rgba(3, 35, 29, 0.24), 0 1px 2px rgba(3, 35, 29, 0.24);
   --magenta: #ff00ff;
   --card-width: clamp(48px, calc((100vw - 48px) / 7), 160px);
-  --selected-ring: calc(var(--card-width) * 0.05);
-  --selected-ring-peak: calc(var(--card-width) * 0.1);
+  --selected-glow-near: clamp(7px, calc(var(--card-width) * 0.12), 18px);
+  --selected-glow-far: clamp(18px, calc(var(--card-width) * 0.28), 45px);
+  --selected-glow-halo: clamp(28px, calc(var(--card-width) * 0.44), 70px);
+  --selected-glow-spread: clamp(2px, calc(var(--card-width) * 0.035), 6px);
+  --selected-glow-wide-spread: clamp(4px, calc(var(--card-width) * 0.07), 12px);
+  --selected-glow-halo-spread: clamp(6px, calc(var(--card-width) * 0.096), 16px);
   --card-height: calc(var(--card-width) * 1.42);
   --rank-size: clamp(24px, calc(var(--card-width) * 0.68), 110px);
   --suit-size: clamp(22px, calc(var(--card-width) * 0.806), 130px);
@@ -177,6 +181,20 @@ button:focus-visible,
 @media (orientation: portrait) {
   .rotate-hint {
     display: block;
+  }
+}
+
+/* On a narrow phone the three controls need the room; the icon plus the
+   home-screen label already identify the app, so drop the wordmark to
+   visually-hidden rather than truncating it to an unreadable stub. */
+@media (max-width: 460px) {
+  .brand h1 {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
   }
 }
 
@@ -364,44 +382,53 @@ button.card {
 .card-face {
   position: absolute;
   inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: max(10px, calc(var(--rank-size) * 0.08));
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
+.card-rank,
+.card-index-suit,
+.card-main-suit {
+  fill: currentColor;
+  text-anchor: middle;
+}
+
+/* Verdana: drawn for screen legibility - wide forms, open counters, an
+   unmistakable 1 vs 0. Chosen over a serif for exactly that reason. */
 .card-rank {
-  font-family: Georgia, "Times New Roman", serif;
-  font-weight: 900;
-  letter-spacing: -0.03em;
-  line-height: 0.82;
-  font-size: calc(var(--rank-size) * var(--text-scale, 1));
+  font-family: Verdana, Geneva, "DejaVu Sans", sans-serif;
+  font-size: 54px;
+  font-weight: 700;
 }
 
-.card-suit-big {
+.card-index-suit {
   font-family: Georgia, "Times New Roman", serif;
-  line-height: 0.82;
-  font-size: calc(var(--suit-size) * var(--text-scale, 1));
+  font-size: 42px;
+}
+
+.card-main-suit {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 98px;
 }
 
 .card.selected {
   z-index: 60;
-  --text-scale: 1.1;
   border-color: var(--magenta);
-  box-shadow: 0 0 0 var(--selected-ring) var(--magenta), 0 0 0 calc(var(--selected-ring) + 3px) rgba(255, 255, 255, 0.9), 0 10px 20px rgba(3, 35, 29, 0.45);
+  box-shadow:
+    0 0 var(--selected-glow-near) var(--selected-glow-spread) rgba(255, 0, 255, 0.72),
+    0 0 var(--selected-glow-far) var(--selected-glow-wide-spread) rgba(255, 0, 255, 0.36),
+    0 0 var(--selected-glow-halo) var(--selected-glow-halo-spread) rgba(255, 0, 255, 0.16),
+    0 10px 20px rgba(3, 35, 29, 0.45);
   transform: translateY(-6px);
   animation: none;
 }
 
-@keyframes selected-pulse {
-  0%, 100% { box-shadow: 0 0 0 var(--selected-ring) var(--magenta), 0 0 0 calc(var(--selected-ring) + 3px) rgba(255, 255, 255, 0.9), 0 10px 20px rgba(3, 35, 29, 0.45); }
-  50% { box-shadow: 0 0 0 var(--selected-ring-peak) var(--magenta), 0 0 0 calc(var(--selected-ring-peak) + 3px) rgba(255, 255, 255, 0.9), 0 10px 20px rgba(3, 35, 29, 0.45); }
-}
-
 .card.selected-chain:not(.selected) {
-  --text-scale: 1.1;
-  box-shadow: 0 0 0 var(--selected-ring) rgba(255, 0, 255, 0.85), var(--shadow);
+  box-shadow:
+    0 0 var(--selected-glow-near) var(--selected-glow-spread) rgba(255, 0, 255, 0.5),
+    0 0 var(--selected-glow-far) var(--selected-glow-wide-spread) rgba(255, 0, 255, 0.22),
+    var(--shadow);
 }
 
 .pile.invalid {
