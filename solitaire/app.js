@@ -12,7 +12,9 @@
   const STORAGE_KEY = "solitaire-saved-game-v1";
   const PLAYED_BEFORE_KEY = "solitaire-played-before-v1";
   const MAX_UNDO_STEPS = 100;
-  const DOUBLE_TAP_MS = 360;
+  // Generous on purpose: the player taps slowly.
+  const DOUBLE_TAP_MS = 800;
+  const GOLDEN_GLOW_MS = 5000;
 
   // Each of these 52-card orderings was found and verified winnable by an
   // offline solver (full replay of a legal move sequence to all 4
@@ -38,7 +40,6 @@
   const helpDoneButton = document.getElementById("help-done-button");
   const winOverlay = document.getElementById("win-overlay");
   const winNextNote = document.getElementById("win-next-note");
-  const celebrationPreview = document.getElementById("celebration-preview");
   const celebrationTip = document.getElementById("celebration-tip");
   const playAgainButton = document.getElementById("play-again-button");
   const statusMessage = document.getElementById("status-message");
@@ -47,6 +48,7 @@
   let undoStack = [];
   let selected = null;
   let clearPathMoveCount = null;
+  let goldenGlowTimer = 0;
   const revealDelayIds = new Set();
   const flipRevealIds = new Set();
   let lastTap = { key: "", time: 0 };
@@ -363,6 +365,7 @@
         flipRevealIds.clear();
       }, 200);
     }
+    if (destinationZone === "foundation" && leadCard.rank === 1) celebrateAce(destinationIndex);
     announce(`${cardName(leadCard)} moved.`);
     checkForWin();
     return true;
@@ -400,6 +403,16 @@
     });
   }
 
+  // A small gold burst around the foundation pile when an Ace lands on it.
+  function celebrateAce(foundationIndex) {
+    if (prefersReducedMotion()) return;
+    const pile = foundationPiles[foundationIndex];
+    pile.classList.remove("ace-arrived");
+    void pile.offsetWidth;
+    pile.classList.add("ace-arrived");
+    window.setTimeout(() => pile.classList.remove("ace-arrived"), 1400);
+  }
+
   function prefersReducedMotion() {
     return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   }
@@ -426,7 +439,7 @@
       }
     }
 
-    selected = current;
+    selected = hasClearPathToVictory() ? null : current;
     render();
     invalidFeedback(pileElementFor(current), "No open place for that card yet.");
   }
@@ -482,6 +495,14 @@
   function handleCardTap(cardElement) {
     if (dragInProgress) return;
     const location = makeLocation(cardElement);
+
+    // Finish mode: once every card is face up, one tap sends a card home.
+    if (hasClearPathToVictory()) {
+      selected = null;
+      lastTap = { key: "", time: 0 };
+      if (location.zone !== "foundation") autoMove(location);
+      return;
+    }
     const tapKey = location.cardId;
     const now = performance.now();
     const isDoubleTap = tapKey && lastTap.key === tapKey && now - lastTap.time <= DOUBLE_TAP_MS;
@@ -564,6 +585,23 @@
     statusTimer = window.setTimeout(() => statusMessage.classList.remove("show"), visible ? 1800 : 100);
   }
 
+  // Empty-column marker: a small crown over a big K in the card-face letter style.
+  const EMPTY_KING_SVG = (() => {
+    const king = window.CARD_GLYPHS.K;
+    const centerX = king.x + king.w / 12;
+    const centerY = king.y + king.h / 12;
+    return `
+      <svg class="empty-king" viewBox="0 0 52 74" aria-hidden="true" focusable="false">
+        <g transform="translate(26 15) scale(0.2) translate(-50 -50)">
+          <path d="M8 72 L4 26 L30 48 L50 14 L70 48 L96 26 L92 72 Z"/>
+          <rect x="8" y="78" width="84" height="12" rx="3"/>
+          <circle cx="4" cy="24" r="7"/><circle cx="50" cy="12" r="7"/><circle cx="96" cy="24" r="7"/>
+        </g>
+        <path transform="translate(${26 - centerX} ${45 - centerY}) translate(${centerX} ${centerY}) scale(1.05) translate(${-centerX} ${-centerY}) translate(${king.x} ${king.y}) scale(${1 / 60} ${-1 / 60}) translate(0 ${-king.h * 10})" d="${king.d}"/>
+      </svg>
+    `;
+  })();
+
   // One traced glyph from card-glyphs.js, positioned in 52-wide card units and
   // optionally shrunk around its own center.
   function glyphPath(name, scale = 1) {
@@ -604,8 +642,9 @@
         </svg>
       `;
 
-      if (selected && selected.cardId === card.id) element.classList.add("selected");
-      if (selected && selected.zone === "tableau" && location.zone === "tableau" && selected.pileIndex === location.pileIndex && location.cardIndex >= selected.cardIndex) {
+      const showSelection = !hasClearPathToVictory();
+      if (showSelection && selected && selected.cardId === card.id) element.classList.add("selected");
+      if (showSelection && selected && selected.zone === "tableau" && location.zone === "tableau" && selected.pileIndex === location.pileIndex && location.cardIndex >= selected.cardIndex) {
         element.classList.add("selected-chain");
       }
     } else {
@@ -677,11 +716,7 @@
       if (!cards.length) {
         pile.setAttribute("role", "button");
         pile.tabIndex = 0;
-        const king = document.createElement("span");
-        king.className = "empty-king";
-        king.textContent = "K";
-        king.setAttribute("aria-hidden", "true");
-        pile.appendChild(king);
+        pile.insertAdjacentHTML("beforeend", EMPTY_KING_SVG);
         pile.setAttribute("aria-label", `Empty tableau column ${pileIndex + 1}. Only a King can move here.`);
         return;
       }
@@ -720,17 +755,31 @@
     return !isFullyWon() && game.tableau.every((pile) => pile.every((card) => card.faceUp));
   }
 
+  // When every card is face up the game is won: glow the Ace piles for a few
+  // seconds and show a tip until the next move.
   function updateCelebrationPreview() {
     const clearPath = hasClearPathToVictory();
     if (clearPath) {
-      if (clearPathMoveCount === null) clearPathMoveCount = game.moveCount;
+      if (clearPathMoveCount === null) {
+        clearPathMoveCount = game.moveCount;
+        startGoldenGlow();
+      }
     } else {
       clearPathMoveCount = null;
+      stopGoldenGlow();
     }
-    const showPreview = clearPath && game.moveCount === clearPathMoveCount;
-    celebrationPreview.hidden = !showPreview;
-    celebrationPreview.setAttribute("aria-hidden", String(!showPreview));
-    celebrationTip.hidden = !showPreview;
+    celebrationTip.hidden = !(clearPath && game.moveCount === clearPathMoveCount);
+  }
+
+  function startGoldenGlow() {
+    board.classList.add("golden-glow");
+    window.clearTimeout(goldenGlowTimer);
+    goldenGlowTimer = window.setTimeout(stopGoldenGlow, GOLDEN_GLOW_MS);
+  }
+
+  function stopGoldenGlow() {
+    window.clearTimeout(goldenGlowTimer);
+    board.classList.remove("golden-glow");
   }
 
   function checkForWin() {

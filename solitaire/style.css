@@ -238,7 +238,6 @@ button:focus-visible,
 }
 
 .slot-symbol,
-.empty-king,
 .recycle-mark {
   position: absolute;
   inset: 0;
@@ -305,18 +304,21 @@ button:focus-visible,
   left: 0;
   width: 100%;
   height: var(--card-height);
-  border: 2px dashed rgba(255, 255, 255, 0.25);
+  border: 2px solid var(--line);
   border-radius: inherit;
+  background: rgba(2, 49, 40, 0.18);
   content: "";
 }
 
-.empty-king {
+/* Crown over K: same bright white and weight as the Ace-pile suit marks. */
+svg.empty-king {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: var(--card-height);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: calc(var(--card-width) * 0.34);
-  font-weight: 700;
-  opacity: 0.65;
+  fill: rgba(255, 253, 247, 0.94);
+  filter: drop-shadow(0 1px 2px rgba(3, 35, 29, 0.45));
 }
 
 .card {
@@ -604,26 +606,6 @@ button.card {
   animation: confetti-fall 3.2s var(--delay) ease-in infinite;
 }
 
-.celebration-preview {
-  position: fixed;
-  inset: 0;
-  z-index: 400;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.celebration-preview i {
-  position: absolute;
-  top: -30px;
-  left: var(--x);
-  width: 11px;
-  height: 20px;
-  border-radius: 3px;
-  background: var(--color);
-  opacity: 0;
-  animation: confetti-fall 3.2s var(--delay) ease-in infinite;
-}
-
 .celebration-tip {
   position: fixed;
   left: 50%;
@@ -640,6 +622,64 @@ button.card {
   text-align: center;
   transform: translateX(-50%);
   box-shadow: 0 6px 18px rgba(3, 35, 29, 0.3);
+}
+
+/* Finish mode: a soft gold glow around the Ace piles for 5 seconds. */
+.golden-glow .foundation-pile {
+  animation: golden-glow 5s ease-in-out forwards;
+}
+
+@keyframes golden-glow {
+  0% { box-shadow: 0 0 0 0 rgba(255, 207, 92, 0); }
+  15%, 35%, 55%, 75% { box-shadow: 0 0 14px 5px rgba(255, 207, 92, 0.85); }
+  25%, 45%, 65% { box-shadow: 0 0 8px 2px rgba(255, 207, 92, 0.55); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 207, 92, 0); }
+}
+
+/* An Ace landing on its pile: a gold ring swells out and fades, with a few
+   sparkles popping outward. */
+.foundation-pile.ace-arrived::before {
+  position: absolute;
+  inset: -3px;
+  z-index: 60;
+  border: 4px solid #ffd35c;
+  border-radius: calc(var(--card-width) * 0.14);
+  box-shadow: 0 0 18px 6px rgba(255, 211, 92, 0.85);
+  content: "";
+  pointer-events: none;
+  animation: ace-ring 1.1s ease-out forwards;
+}
+
+.foundation-pile.ace-arrived::after {
+  position: absolute;
+  inset: -18px;
+  z-index: 61;
+  display: block;
+  background:
+    radial-gradient(circle, #ffe9a8 0 4px, transparent 5px) 50% 0 / 14px 14px no-repeat,
+    radial-gradient(circle, #ffe9a8 0 4px, transparent 5px) 50% 100% / 14px 14px no-repeat,
+    radial-gradient(circle, #ffe9a8 0 4px, transparent 5px) 0 50% / 14px 14px no-repeat,
+    radial-gradient(circle, #ffe9a8 0 4px, transparent 5px) 100% 50% / 14px 14px no-repeat,
+    radial-gradient(circle, #ffd35c 0 3px, transparent 4px) 6% 6% / 12px 12px no-repeat,
+    radial-gradient(circle, #ffd35c 0 3px, transparent 4px) 94% 6% / 12px 12px no-repeat,
+    radial-gradient(circle, #ffd35c 0 3px, transparent 4px) 6% 94% / 12px 12px no-repeat,
+    radial-gradient(circle, #ffd35c 0 3px, transparent 4px) 94% 94% / 12px 12px no-repeat;
+  border: 0;
+  content: "";
+  pointer-events: none;
+  animation: ace-sparkle 1.1s ease-out forwards;
+}
+
+@keyframes ace-ring {
+  0% { opacity: 1; transform: scale(0.95); }
+  45% { opacity: 1; transform: scale(1.1); }
+  100% { opacity: 0; transform: scale(1.22); }
+}
+
+@keyframes ace-sparkle {
+  0% { opacity: 0; transform: scale(0.6); }
+  25% { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.35); }
 }
 
 @keyframes gentle-shake {
