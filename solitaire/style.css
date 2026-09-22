@@ -22,7 +22,7 @@
   --suit-size: clamp(22px, calc(var(--card-width) * 0.806), 130px);
   --pile-gap: 4px;
   --down-step: clamp(15px, 2.3vh, 22px);
-  --up-step: clamp(30px, max(4vh, calc(var(--card-width) * 0.5)), 90px);
+  --up-step: clamp(30px, max(4vh, calc(var(--card-width) * 0.64)), 90px);
 }
 
 * {
@@ -385,31 +385,6 @@ button.card {
   display: block;
   width: 100%;
   height: 100%;
-}
-
-.card-rank,
-.card-index-suit,
-.card-main-suit {
-  fill: currentColor;
-  text-anchor: middle;
-}
-
-/* Verdana: drawn for screen legibility - wide forms, open counters, an
-   unmistakable 1 vs 0. Chosen over a serif for exactly that reason. */
-.card-rank {
-  font-family: Verdana, Geneva, "DejaVu Sans", sans-serif;
-  font-size: 54px;
-  font-weight: 700;
-}
-
-.card-index-suit {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 42px;
-}
-
-.card-main-suit {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 98px;
 }
 
 .card.selected {

@@ -564,6 +564,15 @@
     statusTimer = window.setTimeout(() => statusMessage.classList.remove("show"), visible ? 1800 : 100);
   }
 
+  // One traced glyph from card-glyphs.js, positioned in 52-wide card units and
+  // optionally shrunk around its own center.
+  function glyphPath(name, scale = 1) {
+    const glyph = window.CARD_GLYPHS[name];
+    const cx = glyph.x + glyph.w / 12;
+    const cy = glyph.y + glyph.h / 12;
+    return `<path transform="translate(${cx} ${cy}) scale(${scale}) translate(${-cx} ${-cy}) translate(${glyph.x} ${glyph.y}) scale(${1 / 60} ${-1 / 60}) translate(0 ${-glyph.h * 10})" d="${glyph.d}"/>`;
+  }
+
   function createCardElement(card, location, offset = "-2px", zIndex = 1) {
     const displayFaceUp = card.faceUp && !revealDelayIds.has(card.id);
     const element = document.createElement(displayFaceUp ? "button" : "div");
@@ -581,15 +590,17 @@
       element.classList.toggle("red-card", card.color === "red");
       element.draggable = true;
       element.setAttribute("aria-label", `${cardName(card)}. Tap to select; double-tap to move automatically.`);
-      const rankLabel = RANKS[card.rank];
-      // Two-character ranks ("10") get condensed to a fixed width so they can
-      // never push the index suit off the card edge.
-      const fitWide = rankLabel.length > 1 ? ' textLength="50" lengthAdjust="spacingAndGlyphs"' : "";
+      const suitKey = suit.id[0].toUpperCase();
+      // Traced glyphs are laid out on a 52-wide card; scale that onto this 100-wide
+      // face. This card is shorter (1.42 vs 1.5), so the big suit shrinks to 85%
+      // to stay below the stacked-card peek and above the bottom edge.
       element.innerHTML = `
         <svg class="card-face" viewBox="0 0 100 142" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
-          <text class="card-rank" x="28" y="52"${fitWide}>${rankLabel}</text>
-          <text class="card-index-suit" x="76" y="48">${suit.symbol}</text>
-          <text class="card-main-suit" x="50" y="130">${suit.symbol}</text>
+          <g transform="scale(${100 / 52})" fill="currentColor">
+            ${glyphPath(RANKS[card.rank])}
+            ${glyphPath(`small_${suitKey}`)}
+            ${glyphPath(`big_${suitKey}`, 0.85)}
+          </g>
         </svg>
       `;
 
