@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Hearts">
-  <defs><radialGradient id="felt"><stop stop-color="#28573e"/><stop offset="1" stop-color="#0b251b"/></radialGradient><linearGradient id="brass" x2="1" y2="1"><stop stop-color="#fff0c2"/><stop offset=".5" stop-color="#dfbd72"/><stop offset="1" stop-color="#aa7731"/></linearGradient></defs>
-  <path fill="url(#felt)" d="M0 0h512v512H0z"/>
-  <circle cx="256" cy="256" r="186" fill="none" stroke="url(#brass)" stroke-width="7"/>
-  <circle cx="256" cy="256" r="174" fill="none" stroke="#e4c783" stroke-width="2"/>
-  <path d="m256 96 160 160-160 160L96 256Z" fill="#7c182c" stroke="url(#brass)" stroke-width="7"/>
-  <path d="M256 351c-24-24-108-80-108-131 0-61 79-73 108-17 30-56 108-44 108 17 0 51-84 107-108 131Z" fill="#f6dfaa"/>
-</svg>
