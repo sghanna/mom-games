@@ -1,0 +1,44 @@
+.card.received::after { content: attr(data-new); inset: auto -5px -5px auto; width: auto; height: 19px; min-width: 32px; padding: 0 3px; }
+.card.playable { outline: 2px solid #e4c783; outline-offset: 1px; }
+.card[aria-pressed="true"] { outline: 3px solid #ff00ff; }
+.seat.is-turn { border: 2px solid #ffdfa0; box-shadow: 0 0 9px #f1d08955; }
+.hand { height: calc(var(--card-height) * var(--row-count,3) + var(--row-gaps,2) * 12px); }
+.table.play .center-cards { display: block; }
+.table.play .trick-card { position: absolute; }
+.table.play .trick-card.north { top: 0; left: calc(50% - var(--table-card-width) / 2); }
+.table.play .trick-card.west { top: 24px; left: calc(50% - var(--table-card-width) * 1.5 - 20px); }
+.table.play .trick-card.east { top: 24px; left: calc(50% + var(--table-card-width) / 2 + 20px); }
+.table-status { line-height: 1.25; }
+.primary-action { gap: 7px; font-size: 21px; }
+.primary-action .action-detail { padding-left: 7px; font-size: 17px; }
+.primary-action .action-arrow { flex: 0 0 19px; }
+.hand-heading h2 { font-size: 20px; }
+dialog { max-height: calc(100dvh - 24px); overflow-y: auto; }
+.setting { display: grid; gap: 8px; margin: 20px 0; font-size: 19px; font-weight: 700; }
+.setting select { appearance: none; width: 100%; min-height: 48px; padding: 10px 14px; color: var(--cream); background: #092419; border: 2px solid var(--brass); border-radius: 12px; font: inherit; }
+#settings-dialog h3 { font-size: 21px; margin: 24px 0 0; }
+#settings-dialog p { font-size: 18px; }
+.review-play figcaption { font-size: 17px; }
+@media (max-height:800px) {
+  :root:not([data-layout="current"]) .hand { height: calc(var(--card-height) * var(--row-count,3) - var(--row-gaps,2) * var(--hand-overlap)); }
+}
+@media (max-height:700px) {
+  /* The gold outline and the three cards on the table identify received cards.
+     Keep text badges out of the rank area when rows overlap deeply. */
+  .hand-row:not(:last-child) .card.received::after { display:none; }
+}
+@media (min-width:650px) and (max-height:500px) {
+  :root { --card-width:60px; --card-height:90px; }
+  .game { max-width:none; padding:max(12px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left)); display:grid; grid-template-columns:minmax(260px,.9fr) minmax(350px,1.1fr); grid-template-rows:44px 1fr 58px; gap:8px 16px; }
+  .header { grid-column:1 / -1; height:44px; padding:0; }
+  .table { grid-column:1; grid-row:2 / 4; margin:0; min-height:190px; }
+  .hand-area { grid-column:2; grid-row:2; align-self:end; }
+  .hand-heading { height:30px; }
+  .action-area { grid-column:2; grid-row:3; padding-top:0; height:58px; }
+  :root:not([data-layout="current"]) { --hand-overlap:40px; --row-step:50px; }
+  .result-screen { grid-column:1 / -1; grid-row:2 / 4; padding-top:0; display:grid; grid-template-columns:1fr 1fr; grid-template-rows:auto 1fr auto; gap:8px 28px; }
+  .result-heading { grid-column:1; grid-row:1; }
+  .result-notice, .game-end-reason { grid-column:1; grid-row:2; align-self:start; }
+  .result-scores { grid-column:2; grid-row:1 / 4; align-self:start; max-width:none; }
+  .result-footer { grid-column:1; grid-row:3; width:100%; }
+}

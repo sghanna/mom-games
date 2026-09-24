@@ -1,0 +1,12 @@
+{
+  "name": "hearts-for-mom",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/engine.test.cjs",
+    "test:browser": "node tests/screens.mjs && node tests/browser.mjs && node tests/recovery.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  }
+}

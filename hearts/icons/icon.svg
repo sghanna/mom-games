@@ -1,15 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title description">
-  <title id="title">Hearts app icon</title>
-  <desc id="description">A cream playing card, selected with a magenta ring, showing a large red ace above a large red heart.</desc>
-  <rect width="1024" height="1024" fill="#245f70"/>
-  <circle cx="152" cy="148" r="178" fill="#3f8191" opacity="0.58"/>
-  <circle cx="884" cy="892" r="252" fill="#194b59" opacity="0.58"/>
-  <g transform="rotate(7 512 512)">
-    <rect x="262" y="146" width="500" height="732" rx="68" fill="#123943" opacity="0.28" transform="translate(18 24)"/>
-    <rect x="212" y="96" width="600" height="832" rx="118" fill="#ff00ff"/>
-    <rect x="262" y="146" width="500" height="732" rx="68" fill="#fffdf7"/>
-    <text x="512" y="480" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-weight="900" fill="#9c1c22" font-size="480">A</text>
-    <text x="512" y="860" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" fill="#9c1c22" font-size="585">&#9829;</text>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Hearts">
+  <defs><radialGradient id="felt"><stop stop-color="#28573e"/><stop offset="1" stop-color="#0b251b"/></radialGradient><linearGradient id="brass" x2="1" y2="1"><stop stop-color="#fff0c2"/><stop offset=".5" stop-color="#dfbd72"/><stop offset="1" stop-color="#aa7731"/></linearGradient></defs>
+  <path fill="url(#felt)" d="M0 0h512v512H0z"/>
+  <circle cx="256" cy="256" r="186" fill="none" stroke="url(#brass)" stroke-width="7"/>
+  <circle cx="256" cy="256" r="174" fill="none" stroke="#e4c783" stroke-width="2"/>
+  <path d="m256 96 160 160-160 160L96 256Z" fill="#7c182c" stroke="url(#brass)" stroke-width="7"/>
+  <path d="M256 351c-24-24-108-80-108-131 0-61 79-73 108-17 30-56 108-44 108 17 0 51-84 107-108 131Z" fill="#f6dfaa"/>
 </svg>

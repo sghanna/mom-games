@@ -1,144 +1,93 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; font-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'self'; child-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'">
-    <meta name="theme-color" content="#245f70">
-    <meta name="format-detection" content="telephone=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Hearts">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="description" content="A calm, ad-free Hearts card game that works offline.">
-    <title>Hearts</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-    <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
-    <div class="app-shell" id="app">
-      <header class="top-bar">
-        <div class="brand" aria-label="Hearts">
-          <span class="brand-mark" aria-hidden="true">♥</span>
-          <h1>Hearts</h1>
-        </div>
-        <nav class="top-actions" aria-label="Game controls">
-          <button class="control-button" id="new-game-button" type="button">
-            <span class="control-icon" aria-hidden="true">↻</span>
-            <span>New Game</span>
-          </button>
-          <button class="control-button" id="help-button" type="button" aria-haspopup="dialog">
-            <span class="control-icon help-icon" aria-hidden="true">?</span>
-            <span>How to Play</span>
-          </button>
-        </nav>
-      </header>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; object-src 'none'; frame-src 'none'; worker-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#102a20">
+  <title>Hearts</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" href="style.css?v=hearts-v23">
+  <link rel="stylesheet" href="screens.css?v=hearts-v23">
+  <link rel="stylesheet" href="game.css?v=hearts-v23">
+</head>
+<body>
+<main class="game" aria-label="Hearts game">
+  <header class="header">
+    <h1><svg class="crest" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 2 38 20 20 38 2 20Z" fill="#7c182c" stroke="#e4c783" stroke-width="1.5"/><path d="M20 29C17 26 9 21 9 16c0-7 8-8 11-2 3-6 11-5 11 2 0 5-8 10-11 13Z" fill="#f4dfaa"/></svg><span data-i18n="title">Hearts</span></h1>
+    <button class="pill menu-button" id="menu-button" aria-haspopup="dialog"><span data-i18n="menu">Menu</span> <svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><path d="M2 5h16M2 10h16M2 15h16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button>
+  </header>
 
-      <section class="scoreboard" id="scoreboard" aria-label="Scores"></section>
-      <p class="rotate-hint" aria-hidden="true">↻ Turn your phone sideways for bigger cards</p>
+  <section class="table" aria-label="Opponents and current trick">
+    <div class="table-line" aria-hidden="true"></div>
+    <div class="seat seat-west"><span>Michael</span><strong data-total-for="Michael">0</strong></div>
+    <div class="seat seat-north"><span>Jerry</span><strong data-total-for="Jerry">0</strong></div>
+    <div class="seat seat-east"><span>Barbara</span><strong data-total-for="Barbara">0</strong></div>
+    <div class="center-cards" id="center-cards" aria-label="Cards chosen to pass"></div>
+    <div class="table-status" id="table-status">Pass left to Michael</div>
+  </section>
 
-      <main class="game-board" aria-label="Hearts card table">
-        <section class="table-area" aria-label="Players and current trick">
-          <div class="opponent opponent-north" id="player-2"></div>
-          <div class="opponent opponent-west" id="player-1"></div>
-
-          <div class="trick-stage" id="trick-stage" aria-label="Current trick">
-            <div class="trick-slot trick-north" data-trick-player="2"></div>
-            <div class="trick-slot trick-west" data-trick-player="1"></div>
-            <div class="trick-center" id="trick-center"></div>
-            <div class="trick-slot trick-east" data-trick-player="3"></div>
-            <div class="trick-slot trick-south" data-trick-player="0"></div>
-          </div>
-
-          <div class="opponent opponent-east" id="player-3"></div>
-        </section>
-
-        <section class="turn-panel" aria-live="polite" aria-atomic="true">
-          <p class="turn-message" id="turn-message"></p>
-          <p class="turn-detail" id="turn-detail"></p>
-        </section>
-
-        <section class="pass-panel" id="pass-panel" hidden aria-label="Pass cards">
-          <div>
-            <p class="pass-title" id="pass-title"></p>
-            <p class="pass-count" id="pass-count"></p>
-          </div>
-          <button class="primary-button pass-button" id="pass-button" type="button" disabled>Pass 3 Cards</button>
-        </section>
-
-        <section class="your-seat" id="player-0" aria-label="Your hand">
-          <div class="your-seat-heading">
-            <span class="seat-name">Your hand</span>
-            <span class="card-count" id="your-card-count"></span>
-          </div>
-          <div class="human-hand" id="human-hand"></div>
-        </section>
-      </main>
+  <section class="hand-area" aria-labelledby="instruction">
+    <div class="hand-heading">
+      <h2 id="instruction">Choose 3 cards</h2>
+      <div class="you-score" aria-label="Your total score: 0"><span data-i18n="you">You</span> <strong data-total-for="You">0</strong></div>
     </div>
+    <div class="hand" id="hand" aria-label="Your cards"></div>
+  </section>
 
-    <section class="modal-backdrop" id="help-modal" hidden aria-hidden="true">
-      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="help-title" aria-describedby="help-description">
-        <button class="modal-close" id="help-close-button" type="button" aria-label="Close help">×</button>
-        <div class="modal-suit red" aria-hidden="true">♥</div>
-        <h2 id="help-title">How to Play</h2>
-        <div id="help-description" class="help-copy">
-          <p><strong>Avoid points.</strong> Each heart is 1 point, and the Queen of Spades is 13. The lowest score wins.</p>
-          <p><strong>Follow the suit led</strong> if you can. If you cannot, play any legal card. The highest card in the led suit takes the trick.</p>
-          <p>The 2 of Clubs starts each hand. No hearts or Queen of Spades can be played on that first trick. You cannot lead hearts until someone has played one on another suit.</p>
-          <p>Before most hands, choose 3 cards to pass. Passing rotates left, right, across, then no pass.</p>
-          <p>If one player takes every heart and the Queen of Spades, they <strong>shoot the moon</strong>: the other players each add 26 points.</p>
-          <p>The game ends when someone reaches 100. The player with the lowest score wins.</p>
-        </div>
-        <button class="primary-button" id="help-done-button" type="button">Got It</button>
-      </div>
-    </section>
+  <footer class="action-area">
+    <button class="help-button" id="help-button" aria-label="How to play Hearts">?</button>
+    <button class="primary-action" id="primary-action" disabled><span id="action-label">Pass left</span><span class="action-detail" id="action-detail">0 of 3</span><svg class="action-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="m10 5-7 7 7 7M3 12h18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </footer>
+  <section id="result-screen" class="result-screen" aria-labelledby="result-title" hidden></section>
+  <p class="sr-only" role="status" id="live-status" aria-live="polite"></p>
+</main>
 
-    <section class="modal-backdrop" id="new-game-modal" hidden aria-hidden="true">
-      <div class="modal-card compact-modal" role="dialog" aria-modal="true" aria-labelledby="new-game-title" aria-describedby="new-game-description">
-        <div class="modal-suit" aria-hidden="true">♣</div>
-        <h2 id="new-game-title">Start a New Game?</h2>
-        <p id="new-game-description" class="modal-copy">Your current game will be replaced.</p>
-        <div class="modal-actions">
-          <button class="secondary-button" id="cancel-new-game-button" type="button">Keep Playing</button>
-          <button class="primary-button" id="confirm-new-game-button" type="button">New Game</button>
-        </div>
-      </div>
-    </section>
-
-    <section class="modal-backdrop" id="summary-modal" hidden aria-hidden="true">
-      <div class="modal-card summary-card" role="dialog" aria-modal="true" aria-labelledby="summary-title">
-        <div class="modal-suit red" aria-hidden="true">♥</div>
-        <h2 id="summary-title">Hand Complete</h2>
-        <p class="summary-note" id="summary-note"></p>
-        <div class="results-table" id="hand-results"></div>
-        <button class="primary-button" id="continue-button" type="button">Continue</button>
-      </div>
-    </section>
-
-    <section class="game-over-overlay" id="game-over-overlay" hidden aria-hidden="true">
-      <div class="celebration" aria-hidden="true">
-        <i style="--x: 8%; --delay: 0s; --color: #f2c35e"></i>
-        <i style="--x: 19%; --delay: .6s; --color: #fffdf7"></i>
-        <i style="--x: 31%; --delay: .2s; --color: #d56568"></i>
-        <i style="--x: 44%; --delay: .9s; --color: #7bc6c7"></i>
-        <i style="--x: 57%; --delay: .4s; --color: #f2c35e"></i>
-        <i style="--x: 70%; --delay: 1s; --color: #fffdf7"></i>
-        <i style="--x: 82%; --delay: .3s; --color: #d56568"></i>
-        <i style="--x: 93%; --delay: .75s; --color: #7bc6c7"></i>
-      </div>
-      <div class="modal-card game-over-card" role="dialog" aria-modal="true" aria-labelledby="game-over-title">
-        <div class="win-suits" aria-hidden="true"><span>♣</span><span>♥</span><span>♠</span><span>♦</span></div>
-        <h2 id="game-over-title"></h2>
-        <p id="game-over-message" class="game-over-message"></p>
-        <div class="final-standings" id="final-standings"></div>
-        <button class="primary-button" id="play-again-button" type="button">Play Again</button>
-      </div>
-    </section>
-
-    <div class="sr-only" id="announcer" role="status" aria-live="polite" aria-atomic="true"></div>
-    <noscript>This game needs JavaScript enabled to play.</noscript>
-    <script src="app.js" defer></script>
-  </body>
+<dialog id="menu-dialog" aria-labelledby="menu-title">
+  <div class="dialog-heading"><h2 id="menu-title" data-i18n="menu">Menu</h2><button class="close-button" data-close aria-label="Close menu">×</button></div>
+  <p class="dialog-note" data-i18n="totalScores">Total scores · lowest wins</p>
+  <div class="scores"><div><span data-i18n="you">You</span><strong data-total-for="You">0</strong></div><div><span>Michael</span><strong data-total-for="Michael">0</strong></div><div><span>Jerry</span><strong data-total-for="Jerry">0</strong></div><div><span>Barbara</span><strong data-total-for="Barbara">0</strong></div></div>
+  <p class="dialog-note" id="hand-points-note">This hand: you have 0 points.</p>
+  <button class="last-trick-button" id="last-trick-button" data-i18n="lastTrick" disabled>Last trick</button>
+  <button class="last-trick-button" id="settings-button" data-i18n="settings">Settings</button>
+  <p class="dialog-note" id="save-note" data-i18n="saveNote">Your progress is saved automatically.</p>
+  <button class="dialog-action" data-close data-i18n="back">Back to the game</button>
+  <button class="new-game" id="new-game" data-i18n="newGame">New game</button>
+</dialog>
+<dialog id="help-dialog" aria-labelledby="help-title">
+  <div class="dialog-heading"><h2 id="help-title" data-i18n="help">How to play</h2><button class="close-button" data-close aria-label="Close help">×</button></div>
+  <p data-i18n="ruleGoal"></p>
+  <p data-i18n="rulePass"></p>
+  <p data-i18n="rulePlay"></p>
+  <p data-i18n="ruleHearts"></p>
+  <p data-i18n="ruleMoon"></p>
+  <p data-i18n="ruleControls"></p>
+  <button class="dialog-action" data-close data-i18n="back">Back to the game</button>
+</dialog>
+<dialog id="new-dialog" aria-labelledby="new-title">
+  <h2 id="new-title" data-i18n="restartTitle">Start a new game?</h2>
+  <p data-i18n="restartText">Your current game will be replaced.</p>
+  <button class="dialog-action" data-close data-i18n="keepPlaying">Keep playing</button>
+  <button class="new-game" id="restart" data-i18n="start">Start a new game</button>
+</dialog>
+<dialog id="last-trick-dialog" aria-labelledby="last-trick-title">
+  <h2 id="last-trick-title" data-i18n="lastTrick">Last trick</h2>
+  <div id="last-trick-content"></div>
+  <button class="dialog-action" data-close data-i18n="back">Back to the game</button>
+</dialog>
+<dialog id="settings-dialog" aria-labelledby="settings-title">
+  <div class="dialog-heading"><h2 id="settings-title" data-i18n="settings">Settings</h2><button class="close-button" data-close aria-label="Close">×</button></div>
+  <label class="setting"><span data-i18n="language">Language</span><select id="language"><option value="en">English</option><option value="es">Español</option><option value="vi">Tiếng Việt</option></select></label>
+  <label class="setting"><span data-i18n="pace">Computer speed</span><select id="pace"><option value="slow" data-i18n="slow">Gentle</option><option value="normal" data-i18n="normal">Normal</option><option value="fast" data-i18n="fast">Quick</option></select></label>
+  <label class="setting"><span data-i18n="sound">Soft card sounds</span><select id="sound"><option value="off" data-i18n="off">Off</option><option value="on" data-i18n="on">On</option></select></label>
+  <h3 data-i18n="installTitle">Play offline</h3><p data-i18n="installText"></p>
+  <button class="dialog-action" data-close data-i18n="back">Back to the game</button>
+</dialog>
+<script src="deck.js?v=hearts-v23"></script>
+<script src="engine.js?v=hearts-v23"></script>
+<script src="i18n.js?v=hearts-v23"></script>
+<script src="app.js?v=hearts-v23"></script>
+</body>
 </html>
