@@ -2,6 +2,24 @@
 .card.playable { outline: 2px solid #e4c783; outline-offset: 1px; }
 .card[aria-pressed="true"] { outline: 3px solid #ff00ff; }
 .seat.is-turn { border: 2px solid #ffdfa0; box-shadow: 0 0 9px #f1d08955; }
+.seat { z-index:3; }
+.seat.is-winner { border-color:#ffe0a0; box-shadow:0 0 0 2px #ffe0a055, 0 0 16px #f1d08977; }
+.you-score.is-winner { color:#ffe0a0; text-shadow:0 0 12px #f1d089aa; }
+.trick-pile { position:absolute; width:32px; height:22px; visibility:hidden; pointer-events:none; z-index:1; }
+.trick-pile.has-tricks, .trick-pile.is-receiving { visibility:visible; }
+.trick-pile.is-receiving { filter:drop-shadow(0 0 7px #ffe0a0); }
+.trick-pile i, .flight-back { position:absolute; inset:0; border:2px solid #e4c783; border-radius:4px; background:#742038; box-shadow:inset 0 0 0 2px #361323, 0 2px 3px #0008; }
+.trick-pile i:nth-child(1) { transform:translate(3px,5px) rotate(7deg); }
+.trick-pile i:nth-child(2) { transform:translate(-2px,2px) rotate(-7deg); }
+.trick-pile i::after, .flight-back::after { content:""; position:absolute; width:7px; height:7px; left:calc(50% - 3.5px); top:calc(50% - 3.5px); border:1px solid #ffdf9e; transform:rotate(45deg); }
+.your-pile { position:relative; flex:0 0 32px; margin-right:5px; }
+.trick-flight { position:fixed; inset:0; pointer-events:none; z-index:10; }
+.trick-flight-card { position:absolute; border-radius:6px; transform-origin:center; filter:drop-shadow(0 4px 3px #0006); }
+.flight-face, .flight-back { position:absolute; inset:0; }
+.flight-face svg { display:block; width:100%; height:100%; }
+.flight-back { opacity:0; border-width:3px; border-radius:6px; }
+.center-cards.trick-gathered .trick-card { visibility:hidden; }
+.table .center-cards { z-index:2; }
 .hand { height: calc(var(--card-height) * var(--row-count,3) + var(--row-gaps,2) * 12px); }
 .table.play .center-cards { display: block; }
 .table.play .trick-card { position: absolute; }

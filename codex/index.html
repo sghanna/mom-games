@@ -9,9 +9,9 @@
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icons/icon-180.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <link rel="stylesheet" href="style.css?v=codex-hearts-v1">
-  <link rel="stylesheet" href="screens.css?v=codex-hearts-v1">
-  <link rel="stylesheet" href="game.css?v=codex-hearts-v1">
+  <link rel="stylesheet" href="style.css?v=codex-hearts-v2">
+  <link rel="stylesheet" href="screens.css?v=codex-hearts-v2">
+  <link rel="stylesheet" href="game.css?v=codex-hearts-v2">
 </head>
 <body>
 <main class="game" aria-label="Hearts game">
@@ -25,6 +25,9 @@
     <div class="seat seat-west"><span>Michael</span><strong data-total-for="Michael">0</strong></div>
     <div class="seat seat-north"><span>Jerry</span><strong data-total-for="Jerry">0</strong></div>
     <div class="seat seat-east"><span>Barbara</span><strong data-total-for="Barbara">0</strong></div>
+    <span class="trick-pile" data-pile-for="1" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span class="trick-pile" data-pile-for="2" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span class="trick-pile" data-pile-for="3" aria-hidden="true"><i></i><i></i><i></i></span>
     <div class="center-cards" id="center-cards" aria-label="Cards chosen to pass"></div>
     <div class="table-status" id="table-status">Pass left to Michael</div>
   </section>
@@ -32,7 +35,7 @@
   <section class="hand-area" aria-labelledby="instruction">
     <div class="hand-heading">
       <h2 id="instruction">Choose 3 cards</h2>
-      <div class="you-score" aria-label="Your total score: 0"><span data-i18n="you">You</span> <strong data-total-for="You">0</strong></div>
+      <div class="you-score" aria-label="Your total score: 0"><span class="trick-pile your-pile" data-pile-for="0" aria-hidden="true"><i></i><i></i><i></i></span><span data-i18n="you">You</span> <strong data-total-for="You">0</strong></div>
     </div>
     <div class="hand" id="hand" aria-label="Your cards"></div>
   </section>
@@ -85,9 +88,9 @@
   <h3 data-i18n="installTitle">Play offline</h3><p data-i18n="installText"></p>
   <button class="dialog-action" data-close data-i18n="back">Back to the game</button>
 </dialog>
-<script src="deck.js?v=codex-hearts-v1"></script>
-<script src="engine.js?v=codex-hearts-v1"></script>
-<script src="i18n.js?v=codex-hearts-v1"></script>
-<script src="app.js?v=codex-hearts-v1"></script>
+<script src="deck.js?v=codex-hearts-v2"></script>
+<script src="engine.js?v=codex-hearts-v2"></script>
+<script src="i18n.js?v=codex-hearts-v2"></script>
+<script src="app.js?v=codex-hearts-v2"></script>
 </body>
 </html>

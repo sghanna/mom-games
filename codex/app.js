@@ -16,7 +16,8 @@
   const esc = text => String(text).replace(/[&<>"']/g,c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const check = '<span class="check" aria-hidden="true"><svg viewBox="0 0 18 18"><path d="m3 9 4 4 8-8" stroke="white" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
   const random = () => { const bytes = new Uint32Array(1); crypto.getRandomValues(bytes); return bytes[0] / 4294967296; };
-  let game, selected = [], timer = null, saveProblem = false, recovery = '', audio = null;
+  let game, selected = [], timer = null, saveProblem = false, recovery = '', audio = null, collection = null;
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const read = key => { try { const value = JSON.parse(localStorage.getItem(key)); return value?.version === 2 && E.validate(value.game) ? value : null; } catch { return null; } };
   const saved = read(KEY) || read(BACKUP);
   if (saved) {
@@ -44,7 +45,9 @@
   function stopTimer() { clearTimeout(timer); timer = null; }
   function schedule() {
     stopTimer();
-    if (document.hidden || document.querySelector('dialog[open]') || game.phase !== 'play' || game.turn === 0) return;
+    if (document.hidden || document.querySelector('dialog[open]')) { pauseCollection(); return; }
+    resumeCollection();
+    if (game.phase !== 'play' || game.turn === 0) return;
     timer = setTimeout(() => {
       timer = null;
       if (document.hidden || document.querySelector('dialog[open]') || game.phase !== 'play' || game.turn === 0) return;
@@ -72,6 +75,98 @@
   const actionForPass = () => ({1:'passLeft',3:'passRight',2:'passAcross'}[game.passOffset]);
   const currentTrick = () => game.phase === 'trick-end' ? {cards:game.trick,...E.trickResult(game.trick)} : game.history.at(-1);
   const isResult = () => game.phase === 'hand-end' || game.phase === 'game-over';
+
+  function clearCollection() {
+    const previous = collection;
+    collection = null;
+    if (previous) {
+      clearTimeout(previous.timer);
+      previous.animations.forEach(animation => animation.cancel());
+      previous.layer?.remove();
+    }
+    $('center-cards').classList.remove('trick-gathered');
+    delete document.querySelector('.table').dataset.collection;
+    document.querySelectorAll('.trick-pile').forEach(pile => pile.classList.remove('is-receiving'));
+  }
+  function renderPiles() {
+    const counts = [0,0,0,0];
+    game.history.forEach(trick => counts[trick.winner]++);
+    if (collection?.stage === 'done') counts[collection.winner]++;
+    const tableBox = document.querySelector('.table').getBoundingClientRect();
+    document.querySelectorAll('[data-pile-for]').forEach(pile => {
+      const player = Number(pile.dataset.pileFor);
+      pile.dataset.tricks = counts[player];
+      pile.classList.toggle('has-tricks',counts[player] > 0);
+      if (player) {
+        const seat = document.querySelectorAll('.seat')[player - 1].getBoundingClientRect();
+        pile.style.left = (seat.left - tableBox.left + seat.width / 2 - 16) + 'px';
+        pile.style.top = (seat.bottom - tableBox.top + 5) + 'px';
+      }
+    });
+  }
+  function pauseCollection() {
+    if (!collection) return;
+    clearTimeout(collection.timer); collection.timer = null;
+    collection.animations.forEach(animation => { if (animation.playState === 'running') animation.pause(); });
+  }
+  function finishCollection(current) {
+    if (collection !== current || game !== current.state || current.stage === 'done') return;
+    current.stage = 'done';
+    current.animations.forEach(animation => animation.cancel());
+    current.layer?.remove();
+    $('center-cards').classList.add('trick-gathered');
+    document.querySelector('.table').dataset.collection = 'done';
+    document.querySelectorAll('.trick-pile').forEach(pile => pile.classList.remove('is-receiving'));
+    renderPiles(); renderAction();
+  }
+  function flyTrick(current) {
+    if (collection !== current || document.hidden || document.querySelector('dialog[open]')) return;
+    current.timer = null;
+    if (reducedMotion.matches || !Element.prototype.animate) { finishCollection(current); return; }
+    const cards = [...$('center-cards').querySelectorAll('.trick-card')];
+    const pile = document.querySelector(`[data-pile-for="${current.winner}"]`);
+    const destination = pile.getBoundingClientRect();
+    const center = $('center-cards').getBoundingClientRect();
+    const duration = {slow:1000,normal:850,fast:650}[preferences.pace];
+    const layer = document.createElement('div');
+    layer.className = 'trick-flight'; layer.setAttribute('aria-hidden','true');
+    document.body.append(layer);
+    current.layer = layer; current.stage = 'moving';
+    document.querySelector('.table').dataset.collection = 'moving';
+    pile.classList.add('is-receiving');
+    cards.forEach((card,index) => {
+      const box = card.getBoundingClientRect(), width = card.offsetWidth, height = card.offsetHeight;
+      const x = box.left + box.width / 2, y = box.top + box.height / 2;
+      const flight = document.createElement('div');
+      flight.className = 'trick-flight-card';
+      flight.style.cssText = `left:${x - width/2}px;top:${y - height/2}px;width:${width}px;height:${height}px`;
+      flight.innerHTML = `<span class="flight-face">${card.innerHTML}</span><span class="flight-back"></span>`;
+      layer.append(flight);
+      const gatherX = center.left + center.width / 2 + (index - 1.5) * 4 - x;
+      const gatherY = center.top + center.height / 2 + (index - 1.5) * 3 - y;
+      const endX = destination.left + destination.width / 2 - x;
+      const endY = destination.top + destination.height / 2 - y;
+      const options = {duration,fill:'forwards',easing:'cubic-bezier(.35,0,.2,1)'};
+      current.animations.push(flight.animate([
+        {transform:getComputedStyle(card).transform,opacity:1,offset:0},
+        {transform:`translate(${gatherX}px,${gatherY}px) rotate(${(index - 1.5) * 4}deg)`,opacity:1,offset:.28},
+        {transform:`translate(${endX}px,${endY}px) rotate(90deg) scale(${destination.width / height})`,opacity:1,offset:.92},
+        {transform:`translate(${endX}px,${endY}px) rotate(90deg) scale(${destination.width / height})`,opacity:0,offset:1}
+      ],options));
+      current.animations.push(flight.querySelector('.flight-face').animate([{opacity:1,offset:0},{opacity:1,offset:.5},{opacity:0,offset:.8},{opacity:0,offset:1}],options));
+      current.animations.push(flight.querySelector('.flight-back').animate([{opacity:0,offset:0},{opacity:0,offset:.5},{opacity:1,offset:.8},{opacity:1,offset:1}],options));
+    });
+    $('center-cards').classList.add('trick-gathered');
+    Promise.allSettled(current.animations.map(animation => animation.finished)).then(() => finishCollection(current));
+  }
+  function resumeCollection() {
+    if (!collection || collection.stage === 'done') return;
+    if (collection.stage === 'moving') collection.animations.forEach(animation => { if (animation.playState === 'paused') animation.play(); });
+    else if (!collection.timer) {
+      const current = collection;
+      current.timer = setTimeout(() => flyTrick(current),{slow:1200,normal:900,fast:600}[preferences.pace]);
+    }
+  }
 
   function renderHand() {
     const focused = document.activeElement?.dataset?.card;
@@ -110,6 +205,11 @@
     }
     $('center-cards').querySelectorAll('svg').forEach(svg => svg.setAttribute('aria-hidden','true'));
     document.querySelectorAll('.seat').forEach((seat,i) => seat.classList.toggle('is-turn',game.phase === 'play' && game.turn === i+1));
+    const winner = game.phase === 'trick-end' ? E.trickResult(game.trick).winner : -1;
+    document.querySelectorAll('.seat').forEach((seat,i) => seat.classList.toggle('is-winner',winner === i+1));
+    document.querySelector('.you-score').classList.toggle('is-winner',winner === 0);
+    if (collection?.stage === 'done') $('center-cards').classList.add('trick-gathered');
+    renderPiles();
   }
   function renderAction() {
     const action = $('primary-action'), detail = $('action-detail');
@@ -122,7 +222,7 @@
       $('action-label').textContent = t(game.passOffset ? 'continue' : 'begin'); detail.hidden = true; action.disabled = false;
     } else if (game.phase === 'trick-end') {
       $('instruction').textContent = t('cardPlayed');
-      $('action-label').textContent = t(game.history.length === 12 ? 'seeScores' : 'nextTrick'); detail.hidden = true; action.disabled = false;
+      $('action-label').textContent = t(game.history.length === 12 ? 'seeScores' : 'nextTrick'); detail.hidden = true; action.disabled = collection?.stage !== 'done';
     } else {
       const legal = E.legalCards(game,0);
       $('instruction').textContent = game.turn !== 0 ? t('wait') : !game.history.length && !game.trick.length ? t('leadTwo') : t('chooseCard');
@@ -144,6 +244,12 @@
     $('result-screen').querySelector('.result-continue').addEventListener('click',() => commit(over ? E.newGame(random) : E.nextHand(game,random)));
   }
   function render() {
+    const collected = collection?.state === game && collection.stage === 'done';
+    clearCollection();
+    if (game.phase === 'trick-end') {
+      collection = {state:game,winner:E.trickResult(game.trick).winner,stage:collected ? 'done' : 'waiting',timer:null,animations:[],layer:null};
+      document.querySelector('.table').dataset.collection = collection.stage;
+    }
     document.querySelectorAll('[data-i18n]').forEach(node => node.textContent = t(node.dataset.i18n));
     document.title = t('title');
     document.querySelectorAll('[data-close].close-button').forEach(button => button.setAttribute('aria-label',t('close')));
@@ -177,10 +283,10 @@
     unlockSound();
     if (game.phase === 'pass' && selected.length === 3) commit(E.pass(game,[selected,...[1,2,3].map(p => E.choosePass(E.viewFor(game,p)))]));
     else if (game.phase === 'received') commit(E.begin(game));
-    else if (game.phase === 'trick-end') commit(E.collect(game));
+    else if (game.phase === 'trick-end' && collection?.stage === 'done') commit(E.collect(game));
     else if (game.phase === 'play' && game.turn === 0 && selected.length === 1) commit(E.play(game,0,selected[0]));
   });
-  function openDialog(id) { stopTimer(); $(id).showModal(); }
+  function openDialog(id) { stopTimer(); pauseCollection(); $(id).showModal(); }
   function showLastTrick() {
     const trick = currentTrick(); if (!trick) return;
     if ($('menu-dialog').open) $('menu-dialog').close();
@@ -201,8 +307,11 @@
   $('language').addEventListener('change',() => { preferences.language = $('language').value; L.set(preferences.language); save(); render(); });
   $('pace').addEventListener('change',() => { preferences.pace = $('pace').value; save(); schedule(); });
   $('sound').addEventListener('change',() => { preferences.sound = $('sound').value === 'on'; unlockSound(); sound(); save(); });
-  document.addEventListener('visibilitychange',() => { if (document.hidden) { stopTimer(); save(); } else schedule(); });
-  window.addEventListener('pagehide',() => { stopTimer(); save(); });
+  document.addEventListener('visibilitychange',() => { if (document.hidden) { stopTimer(); pauseCollection(); save(); } else schedule(); });
+  window.addEventListener('pagehide',() => { stopTimer(); pauseCollection(); save(); });
+  window.addEventListener('pageshow',schedule);
+  window.addEventListener('resize',() => { renderPiles(); if (collection?.stage === 'moving') finishCollection(collection); });
+  reducedMotion.addEventListener('change',() => { if (reducedMotion.matches && collection?.stage === 'moving') finishCollection(collection); });
   window.addEventListener('storage',event => {
     if (event.key !== KEY || !event.newValue) return;
     const latest = read(KEY); if (!latest) return;

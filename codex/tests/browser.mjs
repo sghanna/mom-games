@@ -28,6 +28,7 @@ try{
    const card=E.choosePlay(E.viewFor(s,0));await page.locator(`[data-card="${card}"]`).click({position:{x:25,y:20}});await page.locator('#primary-action').click();
   }else if(s.phase==='trick-end'){
    if(!restoreChecked){await page.reload();assert.equal((await read()).game.phase,'trick-end');await page.locator('#menu-button').click();await page.locator('#last-trick-button').click();assert.equal(await page.locator('.review-card').count(),4);await page.locator('#last-trick-dialog [data-close]').click();restoreChecked=true;}
+   await page.clock.runFor(2400);
    await page.locator('#primary-action').click();
   }
  }
