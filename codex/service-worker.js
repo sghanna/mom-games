@@ -1,5 +1,5 @@
 'use strict';
-const CACHE = 'codex-hearts-v2';
+const CACHE = 'codex-hearts-v3';
 const FILES = ['./','./index.html','./style.css','./screens.css','./game.css','./deck.js','./engine.js','./i18n.js','./app.js','./manifest.json','./icons/icon.svg','./icons/icon-180.png','./icons/icon-192.png','./icons/icon-512.png'];
 self.addEventListener('install',event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES)).then(() => self.skipWaiting())));
 self.addEventListener('activate',event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith('codex-hearts-') && key !== CACHE).map(key => caches.delete(key)))).then(() => self.clients.claim())));
