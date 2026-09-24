@@ -6,6 +6,8 @@ A complete, ad-free Hearts game for one person and three computer opponents. Ope
 
 Choose three cards and confirm the pass. Review the three received cards, then continue. On your turn, select a highlighted legal card and press **Play card**. After the fourth card, the winner is highlighted. The cards briefly stay face up, then gather and slide into that player’s pile. Press **Next trick** when ready to continue; the final trick offers **See scores**.
 
+On your turn, cards that cannot legally be played are shaded gray; legal cards stay bright with a gold outline. All cards remain readable while passing, reviewing received cards, and waiting for opponents.
+
 **Menu** contains total scores, your current hand points, the last completed trick, settings, and a guarded New game action. Progress saves after every action. Settings include English, Spanish, Vietnamese, opponent speed, and optional soft sounds. The device language supplies the initial choice; `?lang=es` and `?lang=vi` also work.
 
 On iPhone, open the deployed page in Safari, choose **Share → Add to Home Screen**, and open it once online. The service worker caches all game assets for offline play.

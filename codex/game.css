@@ -1,5 +1,7 @@
 .card.received::after { content: attr(data-new); inset: auto -5px -5px auto; width: auto; height: 19px; min-width: 32px; padding: 0 3px; }
 .card.playable { outline: 2px solid #e4c783; outline-offset: 1px; }
+.card.unplayable > svg { filter: grayscale(1) brightness(.64); }
+.card.unplayable { cursor: not-allowed; }
 .card[aria-pressed="true"] { outline: 3px solid #ff00ff; }
 .seat.is-turn { border: 2px solid #ffdfa0; box-shadow: 0 0 9px #f1d08955; }
 .seat { z-index:3; }

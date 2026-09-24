@@ -177,7 +177,8 @@
     $('hand').innerHTML = rows.map(row => `<div class="hand-row">${row.map(code => {
       const playable = game.phase === 'play' && legal.includes(code);
       const unavailable = game.phase !== 'pass' && !playable;
-      return `<button type="button" class="card ${playable ? 'playable' : ''} ${unavailable ? 'unavailable' : ''} ${game.received.includes(code) ? 'received' : ''}" data-card="${code}" data-new="${esc(t('newLabel'))}" aria-label="${esc(cardName(code))}" aria-pressed="${selected.includes(code)}"${unavailable ? ' aria-disabled="true"' : ''}>${face(code)}${check}</button>`;
+      const unplayable = game.phase === 'play' && game.turn === 0 && !playable;
+      return `<button type="button" class="card ${playable ? 'playable' : ''} ${unavailable ? 'unavailable' : ''} ${unplayable ? 'unplayable' : ''} ${game.received.includes(code) ? 'received' : ''}" data-card="${code}" data-new="${esc(t('newLabel'))}" aria-label="${esc(cardName(code))}" aria-pressed="${selected.includes(code)}"${unavailable ? ' aria-disabled="true"' : ''}>${face(code)}${check}</button>`;
     }).join('')}</div>`).join('');
     $('hand').querySelectorAll('.card').forEach(button => button.addEventListener('click',() => selectCard(button.dataset.card)));
     $('hand').querySelectorAll('.card-svg').forEach(svg => svg.setAttribute('aria-hidden','true'));
