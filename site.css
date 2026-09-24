@@ -1,0 +1,53 @@
+/* Front page and About page for mom-games. Same family look as the games: pine felt, brass, navy, ivory. */
+:root {
+  --felt: radial-gradient(circle at 50% 18%, #1a4630 0%, #0f2c1f 55%, #05130d 100%);
+  --brass: #fbbf24;
+  --brass-light: #fef08a;
+  --navy: rgba(15, 23, 42, 0.95);
+  --ivory: #fff7df;
+  --text: #ece6d2;
+}
+* { box-sizing: border-box; }
+html { background: #05130d; }
+body {
+  margin: 0; min-height: 100vh; min-height: 100dvh;
+  background: var(--felt); background-attachment: fixed; color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 20px; line-height: 1.5; -webkit-text-size-adjust: 100%;
+}
+main {
+  max-width: 600px; margin: 0 auto;
+  padding: max(28px, env(safe-area-inset-top)) 18px max(40px, env(safe-area-inset-bottom));
+}
+h1 { font: 700 42px/1.1 Georgia, "Times New Roman", serif; color: var(--ivory); margin: 18px 0 10px; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7); }
+h2 { font: 700 27px/1.2 Georgia, "Times New Roman", serif; color: var(--ivory); margin: 34px 0 10px; }
+p { margin: 0 0 14px; }
+.lead { font-size: 21px; color: var(--text); margin-bottom: 26px; }
+a { color: var(--brass-light); text-underline-offset: 3px; }
+a:focus-visible { outline: 4px solid #7dd3fc; outline-offset: 4px; border-radius: 8px; }
+
+/* Game tiles: the whole tile is the button */
+.games { display: grid; gap: 18px; margin: 0 0 28px; padding: 0; list-style: none; }
+.tile {
+  display: flex; align-items: center; gap: 18px; min-height: 124px; padding: 16px 18px;
+  border: 3px solid var(--brass); border-radius: 24px; background: var(--navy);
+  color: #fff; text-decoration: none; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.55);
+}
+.tile:active { background: #1e293b; }
+.tile img { width: 88px; height: 88px; border-radius: 20px; flex: 0 0 auto; }
+.tile .words { flex: 1 1 auto; min-width: 0; }
+.tile strong { display: block; font-size: 32px; line-height: 1.15; font-weight: 800; }
+.tile span.sub { display: block; font-size: 19px; color: var(--text); margin-top: 4px; }
+.tile svg { width: 26px; height: 26px; flex: 0 0 auto; }
+
+.tip {
+  border: 2px solid rgba(251, 191, 36, 0.5); border-radius: 18px; padding: 14px 16px;
+  background: rgba(5, 19, 13, 0.55); font-size: 19px;
+}
+.pill {
+  display: inline-flex; align-items: center; min-height: 54px; padding: 0 24px; margin-top: 10px;
+  border: 2px solid var(--brass); border-radius: 27px; background: var(--navy);
+  color: var(--brass-light); font-size: 20px; font-weight: 800; text-decoration: none;
+}
+ul.plain, ol.steps { padding-left: 26px; margin: 0 0 14px; }
+ul.plain li, ol.steps li { margin-bottom: 10px; }
